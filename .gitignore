@@ -1,0 +1,7 @@
+.claude/
+Code/.agents
+Code/skills-lock.json
+Code/database/migration.sql
+Code/database/schema.sql
+Code/database/supabase_database.sql
+Code/database/supabase_reset.sql
