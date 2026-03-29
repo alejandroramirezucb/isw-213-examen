@@ -1,10 +1,3 @@
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 17.4
--- Dumped by pg_dump version 17.4
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -1140,9 +1133,3 @@ ALTER TABLE ONLY public.reservas
 
 ALTER TABLE ONLY public.usuarios
     ADD CONSTRAINT usuarios_id_huesped_fkey FOREIGN KEY (id_huesped) REFERENCES public.huespedes(id) ON DELETE SET NULL;
-
-
---
--- PostgreSQL database dump complete
---
-

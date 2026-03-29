@@ -5,3 +5,6 @@ Code/database/migration.sql
 Code/database/schema.sql
 Code/database/supabase_database.sql
 Code/database/supabase_reset.sql
+Code/node_modules
+Code/dist
+Code/.env.example
