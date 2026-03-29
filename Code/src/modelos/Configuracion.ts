@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn, UpdateDateColumn, Check } from 'typeorm';
 
+// Enum solo para type-safety en TypeScript — en la BD es TEXT con CHECK constraint
 export enum TipoDato {
   TEXT = 'text',
   INTEGER = 'integer',
@@ -9,22 +10,23 @@ export enum TipoDato {
 }
 
 @Entity('configuracion')
+@Check(
+  'chk_configuracion_tipo_dato',
+  "tipo_dato IN ('text','integer','numeric','boolean','time')",
+)
 export class Configuracion {
-  @PrimaryColumn()
+  @PrimaryColumn({ type: 'text' })
   clave!: string;
 
-  @Column()
+  @Column({ type: 'text' })
   valor!: string;
 
-  @Column({ nullable: true })
-  descripcion!: string;
+  @Column({ type: 'text', nullable: true })
+  descripcion!: string | null;
 
-  @Column({
-    type: 'enum',
-    enum: TipoDato,
-  })
+  @Column({ type: 'text', default: TipoDato.TEXT })
   tipo_dato!: TipoDato;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   actualizado_en!: Date;
 }

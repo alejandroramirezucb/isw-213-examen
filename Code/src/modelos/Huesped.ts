@@ -4,18 +4,22 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  Unique,
+  Check,
 } from 'typeorm';
 
 export enum TipoDocumento {
   CARNET = 'carnet',
-  CARNETEXTRANJERO = 'carnet_extranjero',
+  CARNET_EXTRANJERO = 'carnet_extranjero',
   PASAPORTE = 'pasaporte',
   NIT = 'nit',
 }
 
 @Entity('huespedes')
+@Unique('uq_huespedes_documento', ['tipo_documento', 'numero_documento'])
+@Check('chk_huespedes_correo', "correo LIKE '%@%'")
 export class Huesped {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id!: number;
 
   @Column({
@@ -25,24 +29,24 @@ export class Huesped {
   })
   tipo_documento!: TipoDocumento;
 
-  @Column()
+  @Column({ type: 'text' })
   numero_documento!: string;
 
-  @Column()
-  nombre!: string;
+  @Column({ type: 'text' })
+  nombres!: string;
 
-  @Column()
-  apellido!: string;
+  @Column({ type: 'text' })
+  apellidos!: string;
 
-  @Column()
+  @Column({ type: 'text' })
   correo!: string;
 
-  @Column({ nullable: true })
-  telefono!: string;
+  @Column({ type: 'text', nullable: true })
+  telefono!: string | null;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   creado_en!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   actualizado_en!: Date;
 }

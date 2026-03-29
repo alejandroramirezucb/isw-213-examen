@@ -8,6 +8,7 @@ import {
   JoinColumn,
   OneToOne,
   OneToMany,
+  Check,
 } from 'typeorm';
 import { Habitacion } from './Habitacion';
 import { ReservaHuesped } from './ReservaHuesped';
@@ -22,6 +23,7 @@ export enum EstadoReserva {
 }
 
 @Entity('reservas')
+@Check('chk_reservas_fechas', 'fecha_checkout > fecha_checkin')
 export class Reserva {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id!: number;
@@ -30,11 +32,11 @@ export class Reserva {
   @JoinColumn({ name: 'id_habitacion' })
   habitacion!: Habitacion;
 
-  @Column()
-  fecha_checkin!: Date;
+  @Column({ type: 'date' })
+  fecha_checkin!: string;
 
-  @Column()
-  fecha_checkout!: Date;
+  @Column({ type: 'date' })
+  fecha_checkout!: string;
 
   @Column()
   cantidad_personas!: number;
@@ -46,13 +48,13 @@ export class Reserva {
   })
   estado!: EstadoReserva;
 
-  @Column({ nullable: true })
-  notas!: string;
+  @Column({ type: 'text', nullable: true })
+  notas!: string | null;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   creado_en!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   actualizado_en!: Date;
 
   @OneToMany(
@@ -65,10 +67,10 @@ export class Reserva {
   @OneToOne(() => Estancia, (estancia) => estancia.reserva, {
     nullable: true,
   })
-  estancia!: Estancia;
+  estancia!: Estancia | null;
 
   @OneToOne(() => Cancelacion, (cancelacion) => cancelacion.reserva, {
     nullable: true,
   })
-  cancelacion!: Cancelacion;
+  cancelacion!: Cancelacion | null;
 }

@@ -7,6 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  Check,
 } from 'typeorm';
 import { TiposHabitacion } from './TiposHabitacion';
 import { Reserva } from './Reserva';
@@ -19,11 +20,12 @@ export enum EstadoHabitacion {
 }
 
 @Entity('habitaciones')
+@Check('chk_habitaciones_piso', 'piso >= 0')
 export class Habitacion {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id!: number;
 
-  @Column({ unique: true })
+  @Column({ type: 'text', unique: true })
   numero_habitacion!: string;
 
   @Column()
@@ -43,10 +45,10 @@ export class Habitacion {
   @JoinColumn({ name: 'id_tipo_habitacion' })
   tipo_habitacion!: TiposHabitacion;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   creado_en!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   actualizado_en!: Date;
 
   @OneToMany(() => Reserva, (reserva) => reserva.habitacion)

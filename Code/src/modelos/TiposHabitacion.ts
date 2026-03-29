@@ -5,19 +5,22 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   OneToMany,
+  Check,
 } from 'typeorm';
 import { Habitacion } from './Habitacion';
 
 @Entity('tipos_habitacion')
+@Check('chk_tipos_habitacion_capacidad', 'capacidad_maxima > 0')
+@Check('chk_tipos_habitacion_precio', 'precio_referencia > 0')
 export class TiposHabitacion {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id!: number;
 
-  @Column({ unique: true })
+  @Column({ type: 'text', unique: true })
   nombre!: string;
 
-  @Column({ nullable: true })
-  descripcion!: string;
+  @Column({ type: 'text', nullable: true })
+  descripcion!: string | null;
 
   @Column()
   capacidad_maxima!: number;
@@ -25,10 +28,10 @@ export class TiposHabitacion {
   @Column({ type: 'numeric', precision: 10, scale: 2 })
   precio_referencia!: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   creado_en!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   actualizado_en!: Date;
 
   @OneToMany(() => Habitacion, (habitacion) => habitacion.tipo_habitacion)

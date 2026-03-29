@@ -16,14 +16,14 @@ export enum RolUsuario {
 
 @Entity('usuarios')
 export class Usuario {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id!: number;
 
-  @Column({ unique: true })
+  @Column({ type: 'text', unique: true })
   correo!: string;
 
-  @Column({ name: 'password_hash' })
-  password!: string;
+  @Column({ type: 'text', name: 'password_hash' })
+  password_hash!: string;
 
   @Column({
     type: 'enum',
@@ -31,16 +31,16 @@ export class Usuario {
   })
   rol!: RolUsuario;
 
-  @OneToOne(() => Huesped, { nullable: true })
-  @JoinColumn({ name: 'id_huesped' })
-  huesped!: Huesped;
-
-  @Column()
+  @Column({ default: true })
   activo!: boolean;
 
-  @CreateDateColumn()
+  @OneToOne(() => Huesped, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'id_huesped' })
+  huesped!: Huesped | null;
+
+  @CreateDateColumn({ type: 'timestamptz' })
   creado_en!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   actualizado_en!: Date;
 }

@@ -5,10 +5,12 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
+  Check,
 } from 'typeorm';
 import { Reserva } from './Reserva';
 
 @Entity('cancelaciones')
+@Check('chk_cancelaciones_mora', 'monto_mora >= 0')
 export class Cancelacion {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id!: number;
@@ -17,11 +19,11 @@ export class Cancelacion {
   @JoinColumn({ name: 'id_reserva' })
   reserva!: Reserva;
 
-  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamptz', default: () => 'NOW()' })
   timestamp_cancelacion!: Date;
 
-  @Column({ nullable: true })
-  motivo!: string;
+  @Column({ type: 'text', nullable: true })
+  motivo!: string | null;
 
   @Column({
     type: 'numeric',
@@ -31,9 +33,9 @@ export class Cancelacion {
   })
   monto_mora!: number;
 
-  @Column({ nullable: true })
-  registrado_por!: string;
+  @Column({ type: 'text', nullable: true })
+  registrado_por!: string | null;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   creado_en!: Date;
 }
