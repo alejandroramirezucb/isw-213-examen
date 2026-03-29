@@ -38,8 +38,8 @@ export class Huesped {
   @Column({ type: 'text' })
   apellidos!: string;
 
-  @Column({ type: 'text' })
-  correo!: string;
+  @Column({ name: 'correo', type: 'text' })
+  correo_reserva!: string;
 
   @Column({ type: 'text', nullable: true })
   telefono!: string | null;

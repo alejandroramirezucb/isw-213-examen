@@ -19,11 +19,11 @@ export class Usuario {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id!: number;
 
-  @Column({ type: 'text', unique: true })
-  correo!: string;
+  @Column({ name: 'correo', type: 'text', unique: true })
+  correo_auth!: string;
 
-  @Column({ type: 'text', name: 'password_hash' })
-  password_hash!: string;
+  @Column({ name: 'password_hash', type: 'text' })
+  password!: string;
 
   @Column({
     type: 'enum',
