@@ -2,7 +2,7 @@
 
 ## Instrucciones de ejecución
 
-**Requisitos** Node.js 18+, PostgreSQL corriendo localmente.
+**Requisitos** Node.js 18+ y PostgreSQL
 
 1. Instalar dependencias:
 
@@ -11,17 +11,27 @@
    npm install
    ```
 
-2. Configurar variables de entorno (crear archivo `.env` en `Code/`):
+2. Crear la base de datos y cargar el schema:
+
+   ```bash
+   # Crear la base de datos
+   createdb -U postgres hotel_db
+
+   # Cargar el dump en la base de datos
+   psql -U postgres -d hotel_db -f database/dump_local.sql
+   ```
+
+3. Configurar variables de entorno (crear archivo `.env` en `Code/`):
 
    ```
    DB_HOST=localhost
    DB_PORT=5432
-   DB_USERNAME=<usuario>
-   DB_PASSWORD=<contraseña>
+   DB_USERNAME=postgres
+   DB_PASSWORD=<tu_contraseña>
    DB_NAME=hotel_db
    ```
 
-3. Ejecutar en modo desarrollo (backend + frontend al mismo tiempo):
+4. Ejecutar en modo desarrollo (backend + frontend al mismo tiempo):
 
    ```bash
    npm run dev
@@ -52,13 +62,13 @@ PostgreSQL
 
 ## Tecnologías
 
-| Capa              | Tecnología                                     |
-| ----------------- | ---------------------------------------------- |
-| Frontend          | React 18, TypeScript, Vite 5                   |
-| Backend           | Express 5, TypeScript                          |
-| ORM               | TypeORM 0.3                                    |
-| Manejo de errores | ts-results 3.3                                 |
-| Base de datos     | PostgreSQL ( con el driver `pg`)               |
+| Capa              | Tecnología                       |
+| ----------------- | -------------------------------- |
+| Frontend          | React 18, TypeScript, Vite 5     |
+| Backend           | Express 5, TypeScript            |
+| ORM               | TypeORM 0.3                      |
+| Manejo de errores | ts-results 3.3                   |
+| Base de datos     | PostgreSQL ( con el driver `pg`) |
 
 ---
 
