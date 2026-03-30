@@ -16,7 +16,7 @@ type ErrorEstancia =
 
 export class ServicioEstancia {
   private async esSalidaTardia(): Promise<boolean> {
-    const horaLimite = await RepositorioConfiguracion.getTexto(
+    const horaLimite = await RepositorioConfiguracion.obtenerTexto(
       'late_checkout_hora_limite',
       '12:00',
     );
@@ -42,7 +42,7 @@ export class ServicioEstancia {
       return Err('ESTADO_INVALIDO');
     }
 
-    const existe = await RepositorioEstancia.findByReserva(idReserva);
+    const existe = await RepositorioEstancia.buscarPorReserva(idReserva);
 
     if (existe) {
       return Err('CHECKIN_YA_REGISTRADO');
@@ -67,7 +67,7 @@ export class ServicioEstancia {
     idReserva: number,
     dto: RegistrarCheckoutDTO,
   ): Promise<Result<void, ErrorEstancia>> {
-    const estancia = await RepositorioEstancia.findByReserva(idReserva);
+    const estancia = await RepositorioEstancia.buscarPorReserva(idReserva);
 
     if (!estancia) {
       return Err('ESTANCIA_NO_ENCONTRADA');
@@ -95,7 +95,7 @@ export class ServicioEstancia {
   async buscarPorReserva(
     idReserva: number,
   ): Promise<Result<Estancia, ErrorEstancia>> {
-    const estancia = await RepositorioEstancia.findByReserva(idReserva);
+    const estancia = await RepositorioEstancia.buscarPorReserva(idReserva);
 
     if (!estancia) {
       return Err('ESTANCIA_NO_ENCONTRADA');
@@ -105,6 +105,6 @@ export class ServicioEstancia {
   }
 
   async listarAbiertas(): Promise<Result<Estancia[], never>> {
-    return Ok(await RepositorioEstancia.findAbiertas());
+    return Ok(await RepositorioEstancia.buscarAbiertas());
   }
 }

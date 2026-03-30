@@ -6,14 +6,14 @@ type ErrorContactoServicio = 'SERVICIO_NO_ENCONTRADO';
 
 export class ServicioContactoServicio {
   async listarActivos(): Promise<Result<ContactoServicio[], never>> {
-    return Ok(await RepositorioContactoServicio.findActivos());
+    return Ok(await RepositorioContactoServicio.buscarActivos());
   }
 
   async buscarPorNombre(
     nombre: string,
   ): Promise<Result<ContactoServicio, ErrorContactoServicio>> {
     const contactoServicio =
-      await RepositorioContactoServicio.findByNombre(nombre);
+      await RepositorioContactoServicio.buscarPorNombre(nombre);
 
     if (!contactoServicio) {
       return Err('SERVICIO_NO_ENCONTRADO');

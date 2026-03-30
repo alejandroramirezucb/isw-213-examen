@@ -9,11 +9,11 @@ type ErrorHabitacion =
 
 export class ServicioHabitacion {
   async listar(): Promise<Result<Habitacion[], never>> {
-    return Ok(await RepositorioHabitacion.findTodas());
+    return Ok(await RepositorioHabitacion.buscarTodas());
   }
 
   async buscarPorId(id: number): Promise<Result<Habitacion, ErrorHabitacion>> {
-    const habitacion = await RepositorioHabitacion.findConTipoHabitacion(id);
+    const habitacion = await RepositorioHabitacion.buscarConTipo(id);
     
     if (!habitacion) {
       return Err('HABITACION_NO_ENCONTRADA');
@@ -23,11 +23,11 @@ export class ServicioHabitacion {
   }
 
   async listarDisponibles(): Promise<Result<Habitacion[], never>> {
-    return Ok(await RepositorioHabitacion.findDisponibles());
+    return Ok(await RepositorioHabitacion.buscarDisponibles());
   }
 
   async listarPorPiso(piso: number): Promise<Result<Habitacion[], never>> {
-    return Ok(await RepositorioHabitacion.findByPiso(piso));
+    return Ok(await RepositorioHabitacion.buscarPorPiso(piso));
   }
 
   async cambiarEstado(
@@ -41,7 +41,7 @@ export class ServicioHabitacion {
     }
 
     if (estado === EstadoHabitacion.DISPONIBLE) {
-      const tieneActivas = await RepositorioReserva.hasReservasActivas(id);
+      const tieneActivas = await RepositorioReserva.tieneReservasActivas(id);
       
       if (tieneActivas) {
         return Err('HABITACION_CON_RESERVA_ACTIVA');

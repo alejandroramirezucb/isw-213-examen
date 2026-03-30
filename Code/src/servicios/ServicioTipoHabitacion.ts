@@ -3,6 +3,7 @@ import { RepositorioTipoHabitacion } from '../repositorio/RepositorioTipoHabitac
 import { TiposHabitacion } from '../modelos/TiposHabitacion';
 import { CrearTipoHabitacionDTO } from '../dtos/TiposHabitacion/CrearTipoHabitacionDTO';
 import { ActualizarTipoHabitacionDTO } from '../dtos/TiposHabitacion/ActualizarTipoHabitacionDTO';
+import { FabricaTipoHabitacion } from './factory/FabricaTipoHabitacion';
 
 type ErrorTipoHabitacion =
   | 'TIPO_HABITACION_NO_ENCONTRADO'
@@ -10,7 +11,7 @@ type ErrorTipoHabitacion =
 
 export class ServicioTipoHabitacion {
   async listar(): Promise<Result<TiposHabitacion[], never>> {
-    return Ok(await RepositorioTipoHabitacion.findTodas());
+    return Ok(await RepositorioTipoHabitacion.buscarTodas());
   }
 
   async buscarPorId(
@@ -28,17 +29,18 @@ export class ServicioTipoHabitacion {
   async crear(
     dto: CrearTipoHabitacionDTO,
   ): Promise<Result<TiposHabitacion, ErrorTipoHabitacion>> {
-    const existe = await RepositorioTipoHabitacion.findByNombre(dto.nombre);
-    
+    const existe = await RepositorioTipoHabitacion.buscarPorNombre(dto.nombre);
+
     if (existe) {
       return Err('NOMBRE_YA_REGISTRADO');
     }
 
+    const config = FabricaTipoHabitacion.crear(dto.nombre) ?? dto;
     const tipo = RepositorioTipoHabitacion.create({
-      nombre: dto.nombre,
-      descripcion: dto.descripcion ?? null,
-      capacidad_maxima: dto.capacidad_maxima,
-      precio_referencia: dto.precio_referencia,
+      nombre: config.nombre,
+      descripcion: config.descripcion ?? null,
+      capacidad_maxima: config.capacidad_maxima,
+      precio_referencia: config.precio_referencia,
     });
 
     return Ok(await RepositorioTipoHabitacion.save(tipo));

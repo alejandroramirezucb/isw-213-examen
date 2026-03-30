@@ -24,6 +24,7 @@ export const RepositorioReserva = AppDataSource.getRepository(Reserva).extend({
         fecha_checkout: MoreThan(fechaCheckin.toISOString()),
       },
     });
+
     return conflictos.length > 0;
   },
 
@@ -60,12 +61,14 @@ export const RepositorioReserva = AppDataSource.getRepository(Reserva).extend({
     return this.findBy({ estado });
   },
 
-  tieneReservasActivas(idHabitacion: number): Promise<boolean> {
-    return this.count({
+  async tieneReservasActivas(idHabitacion: number): Promise<boolean> {
+    const total = await this.count({
       where: {
         habitacion: { id: idHabitacion },
         estado: In([EstadoReserva.PENDIENTE, EstadoReserva.ACTIVA]),
       },
-    }).then((total) => total > 0);
+    });
+
+    return total > 0;
   },
 });

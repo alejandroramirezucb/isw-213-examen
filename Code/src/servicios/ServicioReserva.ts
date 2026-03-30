@@ -10,12 +10,13 @@ import { CancelarReservaDTO } from '../dtos/Reserva/CancelarReservaDTO';
 type ErrorReserva =
   | 'RESERVA_NO_ENCONTRADA'
   | 'HABITACION_NO_ENCONTRADA'
+  | 'HABITACION_NO_DISPONIBLE'
   | 'CAPACIDAD_EXCEDIDA'
   | 'YA_CANCELADA';
 
 export class ServicioReserva {
   async crear(dto: CrearReservaDTO): Promise<Result<Reserva, ErrorReserva>> {
-    const habitacion = await RepositorioHabitacion.findConTipoHabitacion(
+    const habitacion = await RepositorioHabitacion.buscarConTipo(
       dto.id_habitacion,
     );
 
@@ -24,6 +25,16 @@ export class ServicioReserva {
     }
     if (dto.cantidad_personas > habitacion.tipo_habitacion.capacidad_maxima) {
       return Err('CAPACIDAD_EXCEDIDA');
+    }
+
+    const hayConflicto = await RepositorioReserva.tieneConflictoFechas(
+      dto.id_habitacion,
+      new Date(dto.fecha_checkin),
+      new Date(dto.fecha_checkout),
+    );
+
+    if (hayConflicto) {
+      return Err('HABITACION_NO_DISPONIBLE');
     }
 
     const nuevaReserva = RepositorioReserva.create({
@@ -73,7 +84,7 @@ export class ServicioReserva {
   }
 
   async buscarPorId(id: number): Promise<Result<Reserva, ErrorReserva>> {
-    const reserva = await RepositorioReserva.findConHabitacion(id);
+    const reserva = await RepositorioReserva.buscarConHabitacion(id);
     
     if (!reserva) {
       return Err('RESERVA_NO_ENCONTRADA');
@@ -83,7 +94,7 @@ export class ServicioReserva {
   }
 
   async buscarConHuespedes(id: number): Promise<Result<Reserva, ErrorReserva>> {
-    const reserva = await RepositorioReserva.findConHuespedes(id);
+    const reserva = await RepositorioReserva.buscarConHuespedes(id);
     
     if (!reserva) {
       return Err('RESERVA_NO_ENCONTRADA');
@@ -93,6 +104,6 @@ export class ServicioReserva {
   }
 
   async listarActivas(): Promise<Result<Reserva[], never>> {
-    return Ok(await RepositorioReserva.findActivas());
+    return Ok(await RepositorioReserva.buscarActivas());
   }
 }

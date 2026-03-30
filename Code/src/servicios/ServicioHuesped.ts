@@ -10,7 +10,7 @@ export class ServicioHuesped {
   async registrar(
     dto: CrearHuespedDTO,
   ): Promise<Result<Huesped, ErrorHuesped>> {
-    const existe = await RepositorioHuesped.findByDocumento(
+    const existe = await RepositorioHuesped.buscarPorDocumento(
       dto.tipo_documento,
       dto.numero_documento,
     );
@@ -45,7 +45,7 @@ export class ServicioHuesped {
     tipo: TipoDocumento,
     numero: string,
   ): Promise<Result<Huesped, ErrorHuesped>> {
-    const huesped = await RepositorioHuesped.findByDocumento(tipo, numero);
+    const huesped = await RepositorioHuesped.buscarPorDocumento(tipo, numero);
 
     if (!huesped) {
       return Err('HUESPED_NO_ENCONTRADO');
@@ -55,15 +55,11 @@ export class ServicioHuesped {
   }
 
   async buscarPorNombres(termino: string): Promise<Result<Huesped[], never>> {
-    return Ok(await RepositorioHuesped.FindByNombres(termino));
+    return Ok(await RepositorioHuesped.buscarPorNombres(termino));
   }
 
   async listar(): Promise<Result<Huesped[], never>> {
-    return Ok(
-      await RepositorioHuesped.find({
-        order: { apellidos: 'ASC', nombres: 'ASC' },
-      }),
-    );
+    return Ok(await RepositorioHuesped.buscarTodas());
   }
 
   async actualizar(

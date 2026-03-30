@@ -8,7 +8,7 @@ export class ServicioCancelacion {
   async buscarPorReserva(
     idReserva: number,
   ): Promise<Result<Cancelacion, ErrorCancelacion>> {
-    const cancelacion = await RepositorioCancelacion.findByReserva(idReserva);
+    const cancelacion = await RepositorioCancelacion.buscarPorReserva(idReserva);
 
     if (!cancelacion) {
       return Err('CANCELACION_NO_ENCONTRADA');
@@ -18,6 +18,6 @@ export class ServicioCancelacion {
   }
 
   async listarConMora(): Promise<Result<Cancelacion[], never>> {
-    return Ok(await RepositorioCancelacion.findConMora());
+    return Ok(await RepositorioCancelacion.buscarConMora());
   }
 }

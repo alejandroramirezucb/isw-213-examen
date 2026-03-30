@@ -12,7 +12,7 @@ type ErrorUsuario =
 
 export class ServicioUsuario {
   async crear(dto: CrearUsuarioDTO): Promise<Result<Usuario, ErrorUsuario>> {
-    const existe = await RepositorioUsuario.findByCorreo(dto.correo);
+    const existe = await RepositorioUsuario.buscarPorCorreo(dto.correo);
     
     if (existe) {
       return Err('CORREO_DUPLICADO');
@@ -34,7 +34,7 @@ export class ServicioUsuario {
   async autenticar(
     dto: AutenticarUsuarioDTO,
   ): Promise<Result<Usuario, ErrorUsuario>> {
-    const usuario = await RepositorioUsuario.findByCorreo(dto.correo);
+    const usuario = await RepositorioUsuario.buscarPorCorreo(dto.correo);
     
     if (!usuario || usuario.password !== dto.password) {
       return Err('CREDENCIALES_INVALIDAS');

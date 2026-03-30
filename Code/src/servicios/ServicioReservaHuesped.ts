@@ -19,7 +19,7 @@ export class ServicioReservaHuesped {
       return Err('RESERVA_NO_ENCONTRADA');
     }
     
-    return Ok(await RepositorioReservaHuesped.findByReserva(idReserva));
+    return Ok(await RepositorioReservaHuesped.buscarPorReserva(idReserva));
   }
 
   async agregarHuesped(
@@ -32,7 +32,7 @@ export class ServicioReservaHuesped {
       return Err('RESERVA_NO_ENCONTRADA');
     }
 
-    const existe = await RepositorioReservaHuesped.findPorPareja(
+    const existe = await RepositorioReservaHuesped.buscarPorPareja(
       idReserva,
       idHuesped,
     );
@@ -54,7 +54,7 @@ export class ServicioReservaHuesped {
     idReserva: number,
     idHuesped: number,
   ): Promise<Result<void, ErrorReservaHuesped>> {
-    const entrada = await RepositorioReservaHuesped.findPorPareja(
+    const entrada = await RepositorioReservaHuesped.buscarPorPareja(
       idReserva,
       idHuesped,
     );
@@ -84,7 +84,7 @@ export class ServicioReservaHuesped {
       return Err('RESERVA_NO_ENCONTRADA');
     }
 
-    const nuevo = await RepositorioReservaHuesped.findPorPareja(
+    const nuevo = await RepositorioReservaHuesped.buscarPorPareja(
       idReserva,
       idHuespedNuevo,
     );
@@ -93,8 +93,8 @@ export class ServicioReservaHuesped {
       return Err('HUESPED_NO_EN_RESERVA');
     }
 
-    await RepositorioReservaHuesped.clearTitular(idReserva);
-    await RepositorioReservaHuesped.assignTitular(idReserva, idHuespedNuevo);
+    await RepositorioReservaHuesped.limpiarTitular(idReserva);
+    await RepositorioReservaHuesped.asignarTitular(idReserva, idHuespedNuevo);
    
     return Ok(undefined);
   }
