@@ -9,6 +9,7 @@ export function manejarResult<T>(resultado: Result<T, string>): Respuesta<T> {
   if (resultado.err) {
     return { ok: false, error: resultado.val };
   }
+
   return { ok: true, datos: resultado.val };
 }
 
@@ -19,6 +20,7 @@ function codigoError(error: string): number {
   if (error.includes('YA_')) {
     return 409;
   }
+  
   return 400;
 }
 

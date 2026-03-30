@@ -1,6 +1,5 @@
 import { Column, Entity, PrimaryColumn, UpdateDateColumn, Check } from 'typeorm';
 
-// Enum solo para type-safety en TypeScript — en la BD es TEXT con CHECK constraint
 export enum TipoDato {
   TEXT = 'text',
   INTEGER = 'integer',

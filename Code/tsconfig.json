@@ -24,6 +24,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": ["src", "index.tsx"],
+  "include": ["src", "../src/presentacion/index.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
