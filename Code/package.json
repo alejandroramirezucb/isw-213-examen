@@ -4,7 +4,7 @@
   "description": "Proyecto ISW-213",
   "type": "module",
   "scripts": {
-    "dev:server": "tsx watch src/servidor.ts",
+    "dev:server": "tsx watch src/main.ts",
     "dev:frontend": "vite",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:frontend\"",
     "build": "vite build",

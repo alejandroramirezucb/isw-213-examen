@@ -1,4 +1,4 @@
-import { AppDataSource } from '../data-source';
+import { AppDataSource } from '../config/BaseDatos';
 import { Estancia } from '../modelos/Estancia';
 import { IsNull } from 'typeorm';
 

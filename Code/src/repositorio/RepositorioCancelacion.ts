@@ -1,5 +1,5 @@
 import { MoreThan } from 'typeorm';
-import { AppDataSource } from '../data-source';
+import { AppDataSource } from '../config/BaseDatos';
 import { Cancelacion } from '../modelos/Cancelacion';
 
 export const RepositorioCancelacion = AppDataSource.getRepository(

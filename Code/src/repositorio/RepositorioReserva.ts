@@ -1,5 +1,5 @@
 import { In, Not } from 'typeorm';
-import { AppDataSource } from '../data-source';
+import { AppDataSource } from '../config/BaseDatos';
 import { Reserva, EstadoReserva } from '../modelos/Reserva';
 
 export const RepositorioReserva = AppDataSource.getRepository(Reserva).extend({

@@ -1,4 +1,4 @@
-import { AppDataSource } from '../data-source';
+import { AppDataSource } from '../config/BaseDatos';
 import { Usuario, RolUsuario } from '../modelos/Usuario';
 
 export const RepositorioUsuario = AppDataSource.getRepository(Usuario).extend({

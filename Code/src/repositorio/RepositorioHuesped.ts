@@ -1,5 +1,5 @@
 import { ILike } from 'typeorm';
-import { AppDataSource } from '../data-source';
+import { AppDataSource } from '../config/BaseDatos';
 import { Huesped, TipoDocumento } from '../modelos/Huesped';
 
 export const RepositorioHuesped = AppDataSource.getRepository(Huesped).extend({

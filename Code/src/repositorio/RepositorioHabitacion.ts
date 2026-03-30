@@ -1,4 +1,4 @@
-import { AppDataSource } from '../data-source';
+import { AppDataSource } from '../config/BaseDatos';
 import { Habitacion, EstadoHabitacion } from '../modelos/Habitacion';
 
 export const RepositorioHabitacion = AppDataSource.getRepository(
