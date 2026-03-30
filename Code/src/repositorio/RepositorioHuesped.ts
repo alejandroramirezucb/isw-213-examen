@@ -3,15 +3,15 @@ import { AppDataSource } from '../config/BaseDatos';
 import { Huesped, TipoDocumento } from '../modelos/Huesped';
 
 export const RepositorioHuesped = AppDataSource.getRepository(Huesped).extend({
-  findByDocumento(tipo: TipoDocumento, numero: string) {
+  buscarPorDocumento(tipo: TipoDocumento, numero: string) {
     return this.findOneBy({ tipo_documento: tipo, numero_documento: numero });
   },
 
-  findByCorreo(correo_reserva: string) {
+  buscarPorCorreo(correo_reserva: string) {
     return this.findOneBy({ correo_reserva });
   },
 
-  FindByNombres(termino: string) {
+  buscarPorNombres(termino: string) {
     return this.find({
       where: [
         { nombres: ILike(`%${termino}%`) },
@@ -19,5 +19,9 @@ export const RepositorioHuesped = AppDataSource.getRepository(Huesped).extend({
       ],
       order: { apellidos: 'ASC', nombres: 'ASC' },
     });
+  },
+
+  buscarTodas() {
+    return this.find({ order: { apellidos: 'ASC', nombres: 'ASC' } });
   },
 });

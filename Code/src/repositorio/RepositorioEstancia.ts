@@ -4,25 +4,18 @@ import { IsNull } from 'typeorm';
 
 export const RepositorioEstancia = AppDataSource.getRepository(Estancia).extend(
   {
-    findByReserva(idReserva: number) {
+    buscarPorReserva(idReserva: number) {
       return this.findOne({
         relations: { reserva: true },
         where: { reserva: { id: idReserva } },
       });
     },
 
-    findAbiertas() {
+    buscarAbiertas() {
       return this.find({
         relations: { reserva: { habitacion: true } },
         where: { timestamp_checkout: IsNull() },
         order: { timestamp_checkin: 'ASC' },
-      });
-    },
-
-    findLateCheckouts() {
-      return this.find({
-        where: { es_late_checkout: true },
-        order: { timestamp_checkout: 'DESC' },
       });
     },
   },

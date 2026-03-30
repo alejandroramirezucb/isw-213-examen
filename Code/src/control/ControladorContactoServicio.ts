@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { manejarResult, enviar } from './ManejarResult';
+import { RespuestaHttp } from '../config/RespuestaHttp';
 import { ServicioContactoServicio } from '../servicios/ServicioContactoServicio';
 
 export class ControladorContactoServicio {
@@ -7,12 +7,12 @@ export class ControladorContactoServicio {
 
   async listarActivos(_req: Request, res: Response): Promise<void> {
     const resultado = await this.servicio.listarActivos();
-    enviar(res, manejarResult(resultado));
+    new RespuestaHttp(resultado).enviar(res);
   }
 
   async buscarPorNombre(req: Request, res: Response): Promise<void> {
     const { nombre } = req.query as { nombre: string };
     const resultado = await this.servicio.buscarPorNombre(nombre);
-    enviar(res, manejarResult(resultado));
+    new RespuestaHttp(resultado).enviar(res);
   }
 }

@@ -4,11 +4,11 @@ import { ContactoServicio } from '../modelos/ContactoServicio';
 export const RepositorioContactoServicio = AppDataSource.getRepository(
   ContactoServicio,
 ).extend({
-  findActivos() {
+  buscarActivos() {
     return this.findBy({ activo: true });
   },
 
-  findByNombre(nombre: string) {
+  buscarPorNombre(nombre: string) {
     return this.findOneBy({ nombre_servicio: nombre });
   },
 });

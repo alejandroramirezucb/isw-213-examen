@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { manejarResult, enviar } from './ManejarResult';
+import { RespuestaHttp } from '../config/RespuestaHttp';
 import { ServicioEstancia } from '../servicios/ServicioEstancia';
 import { RegistrarCheckinDTO } from '../dtos/Estancia/RegistrarCheckinDTO';
 import { RegistrarCheckoutDTO } from '../dtos/Estancia/RegistrarCheckoutDTO';
@@ -13,7 +13,7 @@ export class ControladorEstancia {
       idReserva,
       req.body as RegistrarCheckinDTO,
     );
-    enviar(res, manejarResult(resultado), 201);
+    new RespuestaHttp(resultado).enviar(res, 201);
   }
 
   async registrarCheckout(req: Request, res: Response): Promise<void> {
@@ -22,17 +22,17 @@ export class ControladorEstancia {
       idReserva,
       req.body as RegistrarCheckoutDTO,
     );
-    enviar(res, manejarResult(resultado));
+    new RespuestaHttp(resultado).enviar(res);
   }
 
   async buscarPorReserva(req: Request, res: Response): Promise<void> {
     const idReserva = Number(req.params.idReserva);
     const resultado = await this.servicio.buscarPorReserva(idReserva);
-    enviar(res, manejarResult(resultado));
+    new RespuestaHttp(resultado).enviar(res);
   }
 
   async listarAbiertas(_req: Request, res: Response): Promise<void> {
     const resultado = await this.servicio.listarAbiertas();
-    enviar(res, manejarResult(resultado));
+    new RespuestaHttp(resultado).enviar(res);
   }
 }

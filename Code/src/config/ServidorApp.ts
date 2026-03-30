@@ -1,14 +1,13 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import { AppDataSource } from './BaseDatos';
-import rutasCancelacion from '../rutas/RouterCancelacion';
-import rutasContactoServicio from '../rutas/RouterContactoServicio';
-import rutasEstancia from '../rutas/RouterEstancia';
-import rutasHabitacion from '../rutas/RouterHabitacion';
-import rutasHuesped from '../rutas/RouterHuesped';
-import rutasReserva from '../rutas/RouterReserva';
-import rutasReservaHuesped from '../rutas/RouterReservaHuesped';
-import rutasTipoHabitacion from '../rutas/RouterTipoHabitacion';
-import rutasUsuario from '../rutas/RouterUsuario';
+import rutasCancelacion from '../rutas/RutaCancelacion';
+import rutasContactoServicio from '../rutas/RutaContactoServicio';
+import rutasEstancia from '../rutas/RutaEstancia';
+import rutasHabitacion from '../rutas/RutaHabitacion';
+import rutasHuesped from '../rutas/RutaHuesped';
+import rutasReserva from '../rutas/RutaReserva';
+import rutasTipoHabitacion from '../rutas/RutaTipoHabitacion';
+import rutasUsuario from '../rutas/RutaUsuario';
 
 export class ServidorApp {
   private app: Express = express();
@@ -26,7 +25,10 @@ export class ServidorApp {
 
   private cors = (_req: Request, res: Response, next: NextFunction): void => {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header(
+      'Access-Control-Allow-Methods',
+      'GET, POST, PUT, DELETE, OPTIONS',
+    );
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
   };
@@ -36,12 +38,10 @@ export class ServidorApp {
     this.app.use('/api/habitacion', rutasHabitacion);
     this.app.use('/api/tipo-habitacion', rutasTipoHabitacion);
     this.app.use('/api/reserva', rutasReserva);
-    this.app.use('/api/reserva', rutasReservaHuesped);
     this.app.use('/api/estancia', rutasEstancia);
     this.app.use('/api/contacto-servicio', rutasContactoServicio);
     this.app.use('/api/usuario', rutasUsuario);
     this.app.use('/api/cancelacion', rutasCancelacion);
-    this.app.get('/api/health', (_req, res) => res.json({ ok: true }));
   }
 
   async iniciar(): Promise<void> {

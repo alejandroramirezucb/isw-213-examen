@@ -4,21 +4,21 @@ import { Habitacion, EstadoHabitacion } from '../modelos/Habitacion';
 export const RepositorioHabitacion = AppDataSource.getRepository(
   Habitacion,
 ).extend({
-  findTodas() {
+  buscarTodas() {
     return this.find({
       relations: { tipo_habitacion: true },
       order: { numero_habitacion: 'ASC' },
     });
   },
 
-  findConTipoHabitacion(id: number) {
+  buscarConTipo(id: number) {
     return this.findOne({
       relations: { tipo_habitacion: true },
       where: { id },
     });
   },
 
-  findDisponibles() {
+  buscarDisponibles() {
     return this.find({
       relations: { tipo_habitacion: true },
       where: { estado: EstadoHabitacion.DISPONIBLE },
@@ -26,7 +26,7 @@ export const RepositorioHabitacion = AppDataSource.getRepository(
     });
   },
 
-  findByPiso(piso: number) {
+  buscarPorPiso(piso: number) {
     return this.find({
       relations: { tipo_habitacion: true },
       where: { piso },
@@ -34,7 +34,7 @@ export const RepositorioHabitacion = AppDataSource.getRepository(
     });
   },
 
-  findByEstado(estado: EstadoHabitacion) {
+  buscarPorEstado(estado: EstadoHabitacion) {
     return this.findBy({ estado });
   },
 });

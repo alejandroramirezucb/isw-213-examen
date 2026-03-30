@@ -1,17 +1,33 @@
-import { In, Not } from 'typeorm';
+import { In, LessThan, MoreThan, Not } from 'typeorm';
 import { AppDataSource } from '../config/BaseDatos';
 import { Reserva, EstadoReserva } from '../modelos/Reserva';
 
 export const RepositorioReserva = AppDataSource.getRepository(Reserva).extend({
-  findActivas() {
+  buscarActivas() {
     return this.find({
       relations: { habitacion: true },
-      where: { estado: Not(EstadoReserva.CANCELADA) },
+      where: { estado: In([EstadoReserva.PENDIENTE, EstadoReserva.ACTIVA]) },
       order: { fecha_checkin: 'ASC' },
     });
   },
 
-  findByHabitacion(idHabitacion: number) {
+  async tieneConflictoFechas(
+    idHabitacion: number,
+    fechaCheckin: Date,
+    fechaCheckout: Date,
+  ): Promise<boolean> {
+    const conflictos = await this.find({
+      where: {
+        habitacion: { id: idHabitacion },
+        estado: In([EstadoReserva.PENDIENTE, EstadoReserva.ACTIVA]),
+        fecha_checkin: LessThan(fechaCheckout.toISOString()),
+        fecha_checkout: MoreThan(fechaCheckin.toISOString()),
+      },
+    });
+    return conflictos.length > 0;
+  },
+
+  buscarPorHabitacion(idHabitacion: number) {
     return this.find({
       relations: { habitacion: true },
       where: {
@@ -22,7 +38,7 @@ export const RepositorioReserva = AppDataSource.getRepository(Reserva).extend({
     });
   },
 
-  findConHuespedes(idReserva: number) {
+  buscarConHuespedes(idReserva: number) {
     return this.findOne({
       relations: {
         reserva_huespedes: { huesped: true },
@@ -33,18 +49,18 @@ export const RepositorioReserva = AppDataSource.getRepository(Reserva).extend({
     });
   },
 
-  findConHabitacion(id: number) {
+  buscarConHabitacion(id: number) {
     return this.findOne({
       relations: { habitacion: { tipo_habitacion: true } },
       where: { id },
     });
   },
 
-  findByEstado(estado: EstadoReserva) {
+  buscarPorEstado(estado: EstadoReserva) {
     return this.findBy({ estado });
   },
 
-  hasReservasActivas(idHabitacion: number): Promise<boolean> {
+  tieneReservasActivas(idHabitacion: number): Promise<boolean> {
     return this.count({
       where: {
         habitacion: { id: idHabitacion },

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { manejarResult, enviar } from './ManejarResult';
+import { RespuestaHttp } from '../config/RespuestaHttp';
 import { ServicioTipoHabitacion } from '../servicios/ServicioTipoHabitacion';
 import { CrearTipoHabitacionDTO } from '../dtos/TiposHabitacion/CrearTipoHabitacionDTO';
 import { ActualizarTipoHabitacionDTO } from '../dtos/TiposHabitacion/ActualizarTipoHabitacionDTO';
@@ -9,20 +9,20 @@ export class ControladorTipoHabitacion {
 
   async listar(_req: Request, res: Response): Promise<void> {
     const resultado = await this.servicio.listar();
-    enviar(res, manejarResult(resultado));
+    new RespuestaHttp(resultado).enviar(res);
   }
 
   async buscarPorId(req: Request, res: Response): Promise<void> {
     const id = Number(req.params.id);
     const resultado = await this.servicio.buscarPorId(id);
-    enviar(res, manejarResult(resultado));
+    new RespuestaHttp(resultado).enviar(res);
   }
 
   async crear(req: Request, res: Response): Promise<void> {
     const resultado = await this.servicio.crear(
       req.body as CrearTipoHabitacionDTO,
     );
-    enviar(res, manejarResult(resultado), 201);
+    new RespuestaHttp(resultado).enviar(res, 201);
   }
 
   async actualizar(req: Request, res: Response): Promise<void> {
@@ -31,6 +31,6 @@ export class ControladorTipoHabitacion {
       id,
       req.body as ActualizarTipoHabitacionDTO,
     );
-    enviar(res, manejarResult(resultado));
+    new RespuestaHttp(resultado).enviar(res);
   }
 }

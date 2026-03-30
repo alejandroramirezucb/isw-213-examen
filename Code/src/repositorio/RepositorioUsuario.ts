@@ -2,19 +2,19 @@ import { AppDataSource } from '../config/BaseDatos';
 import { Usuario, RolUsuario } from '../modelos/Usuario';
 
 export const RepositorioUsuario = AppDataSource.getRepository(Usuario).extend({
-  findByCorreo(correo_auth: string) {
+  buscarPorCorreo(correo_auth: string) {
     return this.findOneBy({ correo_auth });
   },
 
-  findActivos() {
+  buscarActivos() {
     return this.findBy({ activo: true });
   },
 
-  findByRol(rol: RolUsuario) {
+  buscarPorRol(rol: RolUsuario) {
     return this.findBy({ rol, activo: true });
   },
 
-  findConHuesped(id: number) {
+  buscarConHuesped(id: number) {
     return this.findOne({
       where: { id },
       relations: { huesped: true },

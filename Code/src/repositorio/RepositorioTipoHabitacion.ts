@@ -4,15 +4,15 @@ import { TiposHabitacion } from '../modelos/TiposHabitacion';
 export const RepositorioTipoHabitacion = AppDataSource.getRepository(
   TiposHabitacion,
 ).extend({
-  findTodas() {
+  buscarTodas() {
     return this.find({ order: { nombre: 'ASC' } });
   },
 
-  findByNombre(nombre: string) {
+  buscarPorNombre(nombre: string) {
     return this.findOneBy({ nombre });
   },
 
-  findConHabitaciones() {
+  buscarConHabitaciones() {
     return this.find({
       relations: { habitaciones: true },
       order: { nombre: 'ASC' },

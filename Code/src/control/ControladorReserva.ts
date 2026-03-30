@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { manejarResult, enviar } from './ManejarResult';
+import { RespuestaHttp } from '../config/RespuestaHttp';
 import { ServicioReserva } from '../servicios/ServicioReserva';
 import { CrearReservaDTO } from '../dtos/Reserva/CrearReservaDTO';
 import { CancelarReservaDTO } from '../dtos/Reserva/CancelarReservaDTO';
@@ -9,7 +9,7 @@ export class ControladorReserva {
 
   async crear(req: Request, res: Response): Promise<void> {
     const resultado = await this.servicio.crear(req.body as CrearReservaDTO);
-    enviar(res, manejarResult(resultado), 201);
+    new RespuestaHttp(resultado).enviar(res, 201);
   }
 
   async cancelar(req: Request, res: Response): Promise<void> {
@@ -18,23 +18,23 @@ export class ControladorReserva {
       id,
       req.body as CancelarReservaDTO,
     );
-    enviar(res, manejarResult(resultado));
+    new RespuestaHttp(resultado).enviar(res);
   }
 
   async buscarPorId(req: Request, res: Response): Promise<void> {
     const id = Number(req.params.id);
     const resultado = await this.servicio.buscarPorId(id);
-    enviar(res, manejarResult(resultado));
+    new RespuestaHttp(resultado).enviar(res);
   }
 
   async buscarConHuespedes(req: Request, res: Response): Promise<void> {
     const id = Number(req.params.id);
     const resultado = await this.servicio.buscarConHuespedes(id);
-    enviar(res, manejarResult(resultado));
+    new RespuestaHttp(resultado).enviar(res);
   }
 
   async listarActivas(_req: Request, res: Response): Promise<void> {
     const resultado = await this.servicio.listarActivas();
-    enviar(res, manejarResult(resultado));
+    new RespuestaHttp(resultado).enviar(res);
   }
 }
