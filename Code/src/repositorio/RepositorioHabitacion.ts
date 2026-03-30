@@ -4,6 +4,20 @@ import { Habitacion, EstadoHabitacion } from '../modelos/Habitacion';
 export const RepositorioHabitacion = AppDataSource.getRepository(
   Habitacion,
 ).extend({
+  findTodas() {
+    return this.find({
+      relations: { tipo_habitacion: true },
+      order: { numero_habitacion: 'ASC' },
+    });
+  },
+
+  findConTipoHabitacion(id: number) {
+    return this.findOne({
+      relations: { tipo_habitacion: true },
+      where: { id },
+    });
+  },
+
   findDisponibles() {
     return this.find({
       relations: { tipo_habitacion: true },

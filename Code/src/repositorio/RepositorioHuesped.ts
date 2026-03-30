@@ -11,16 +11,13 @@ export const RepositorioHuesped = AppDataSource.getRepository(Huesped).extend({
     return this.findOneBy({ correo_reserva });
   },
 
-  buscarPorNombres(termino: string) {
+  FindByNombres(termino: string) {
     return this.find({
       where: [
         { nombres: ILike(`%${termino}%`) },
         { apellidos: ILike(`%${termino}%`) },
       ],
-      order: {
-        apellidos: 'ASC',
-        nombres: 'ASC',
-      },
+      order: { apellidos: 'ASC', nombres: 'ASC' },
     });
   },
 });

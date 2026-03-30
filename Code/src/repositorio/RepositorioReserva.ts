@@ -1,4 +1,4 @@
-import { Not } from 'typeorm';
+import { In, Not } from 'typeorm';
 import { AppDataSource } from '../data-source';
 import { Reserva, EstadoReserva } from '../modelos/Reserva';
 
@@ -6,9 +6,7 @@ export const RepositorioReserva = AppDataSource.getRepository(Reserva).extend({
   findActivas() {
     return this.find({
       relations: { habitacion: true },
-      where: {
-        estado: Not(EstadoReserva.CANCELADA),
-      },
+      where: { estado: Not(EstadoReserva.CANCELADA) },
       order: { fecha_checkin: 'ASC' },
     });
   },
@@ -35,7 +33,23 @@ export const RepositorioReserva = AppDataSource.getRepository(Reserva).extend({
     });
   },
 
+  findConHabitacion(id: number) {
+    return this.findOne({
+      relations: { habitacion: { tipo_habitacion: true } },
+      where: { id },
+    });
+  },
+
   findByEstado(estado: EstadoReserva) {
     return this.findBy({ estado });
+  },
+
+  hasReservasActivas(idHabitacion: number): Promise<boolean> {
+    return this.count({
+      where: {
+        habitacion: { id: idHabitacion },
+        estado: In([EstadoReserva.PENDIENTE, EstadoReserva.ACTIVA]),
+      },
+    }).then((total) => total > 0);
   },
 });

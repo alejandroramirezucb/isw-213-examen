@@ -1,10 +1,16 @@
 import { AppDataSource } from '../data-source';
-import { Configuracion, TipoDato } from '../modelos/Configuracion';
+import { Configuracion } from '../modelos/Configuracion';
 
 export const RepositorioConfiguracion = AppDataSource.getRepository(
   Configuracion,
 ).extend({
-  findByTipo(tipoDato: TipoDato) {
-    return this.findBy({ tipo_dato: tipoDato });
+  async getNumero(clave: string, defecto = 0): Promise<number> {
+    const config = await this.findOneBy({ clave });
+    return config ? parseFloat(config.valor) : defecto;
+  },
+
+  async getTexto(clave: string, defecto = ''): Promise<string> {
+    const config = await this.findOneBy({ clave });
+    return config?.valor ?? defecto;
   },
 });
