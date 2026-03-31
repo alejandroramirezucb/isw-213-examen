@@ -1,0 +1,44 @@
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radio);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: opacity 0.15s, background 0.15s;
+}
+
+.boton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.boton--primario {
+  background: var(--primario);
+  color: #fff;
+}
+
+.boton--primario:hover:not(:disabled) {
+  background: #16304f;
+}
+
+.boton--secundario {
+  background: transparent;
+  color: var(--primario);
+  border: 2px solid var(--primario);
+}
+
+.boton--secundario:hover:not(:disabled) {
+  background: var(--primario);
+  color: #fff;
+}
+
+.boton--peligro {
+  background: var(--error);
+  color: #fff;
+}
+
+.boton--peligro:hover:not(:disabled) {
+  background: #b91c1c;
+}

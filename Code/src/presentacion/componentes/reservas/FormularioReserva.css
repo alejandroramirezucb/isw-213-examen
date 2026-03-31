@@ -1,0 +1,40 @@
+.formulario-reserva {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 520px;
+}
+
+.formulario-reserva__fila {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.formulario-reserva__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--texto-suave);
+}
+
+.formulario-reserva__campo {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: var(--radio);
+  background: var(--superficie);
+  color: var(--texto);
+  transition: border-color 0.15s;
+}
+
+.formulario-reserva__campo:focus {
+  outline: none;
+  border-color: var(--primario);
+}
+
+.formulario-reserva__titular {
+  padding: 0.5rem 0.75rem;
+  background: #eff6ff;
+  border-radius: var(--radio);
+  font-size: 0.9rem;
+  color: #1d4ed8;
+}

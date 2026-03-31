@@ -1,0 +1,10 @@
+.lista-contactos__tabla {
+  background: var(--superficie);
+  border-radius: var(--radio);
+}
+
+.lista-contactos__vacio {
+  text-align: center;
+  color: var(--texto-suave);
+  padding: 2rem;
+}

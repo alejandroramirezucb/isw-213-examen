@@ -1,0 +1,32 @@
+.formulario-checkin {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 480px;
+}
+
+.formulario-checkin__fila {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.formulario-checkin__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--texto-suave);
+}
+
+.formulario-checkin__campo {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: var(--radio);
+  background: var(--superficie);
+  color: var(--texto);
+  transition: border-color 0.15s;
+}
+
+.formulario-checkin__campo:focus {
+  outline: none;
+  border-color: var(--primario);
+}

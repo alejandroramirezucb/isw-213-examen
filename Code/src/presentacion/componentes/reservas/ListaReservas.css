@@ -1,0 +1,10 @@
+.lista-reservas__tabla {
+  background: var(--superficie);
+  border-radius: var(--radio);
+}
+
+.lista-reservas__vacio {
+  text-align: center;
+  color: var(--texto-suave);
+  padding: 2rem;
+}

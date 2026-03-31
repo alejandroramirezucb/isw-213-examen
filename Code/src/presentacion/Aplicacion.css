@@ -1,0 +1,44 @@
+.aplicacion {
+  display: flex;
+  min-height: 100vh;
+}
+
+.aplicacion__contenido {
+  flex: 1;
+  padding: 2rem;
+  background: var(--fondo);
+  overflow-y: auto;
+}
+
+.pagina__titulo {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primario);
+  margin-bottom: 1.5rem;
+}
+
+.pagina__tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.pagina__tab {
+  padding: 0.5rem 1.25rem;
+  border: 2px solid var(--primario);
+  color: var(--primario);
+  border-radius: var(--radio);
+  font-weight: 500;
+  background: transparent;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pagina__tab:hover {
+  background: var(--primario);
+  color: #fff;
+}
+
+.pagina__tab--activo {
+  background: var(--primario);
+  color: #fff;
+}

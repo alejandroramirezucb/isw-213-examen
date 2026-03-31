@@ -1,0 +1,45 @@
+.barra-lateral {
+  width: var(--lateral);
+  min-height: 100vh;
+  background: var(--primario);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.barra-lateral__logo {
+  padding: 1.5rem 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.barra-lateral__nav {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
+  gap: 0.25rem;
+}
+
+.barra-lateral__item {
+  padding: 0.75rem 1.25rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: left;
+  border-radius: 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+.barra-lateral__item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.barra-lateral__item--activo {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-left: 3px solid var(--acento);
+}

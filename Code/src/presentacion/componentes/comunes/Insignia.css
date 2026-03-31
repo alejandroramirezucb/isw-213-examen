@@ -1,0 +1,39 @@
+.insignia {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.insignia--pendiente {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.insignia--activa {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.insignia--completada {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.insignia--cancelada {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.insignia--disponible {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.insignia--ocupada {
+  background: #fef3c7;
+  color: #92400e;
+}

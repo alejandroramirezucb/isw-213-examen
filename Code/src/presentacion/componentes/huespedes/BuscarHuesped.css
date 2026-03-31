@@ -1,0 +1,40 @@
+.buscar-huesped__etiqueta {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--texto);
+}
+
+.buscar-huesped__fila {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.buscar-huesped__select,
+.buscar-huesped__input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: var(--radio);
+  background: var(--superficie);
+  color: var(--texto);
+}
+
+.buscar-huesped__select {
+  min-width: 140px;
+}
+
+.buscar-huesped__input {
+  flex: 1;
+  min-width: 180px;
+}
+
+.buscar-huesped__resultado {
+  margin-top: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: var(--radio);
+  color: #15803d;
+  font-size: 0.9rem;
+}

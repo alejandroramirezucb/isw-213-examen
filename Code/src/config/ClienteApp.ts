@@ -13,10 +13,12 @@ export class ClienteApp {
       headers: { 'Content-Type': 'application/json' },
       body: cuerpo !== undefined ? JSON.stringify(cuerpo) : undefined,
     });
+
     if (!res.ok) {
       const json = await res.json();
       return Err(json.error ?? 'Error desconocido');
     }
+    
     return Ok((await res.json()) as T);
   }
 }
