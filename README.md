@@ -162,134 +162,152 @@ Recibe peticiones HTTP, delega a los servicios y retorna respuestas.
 
 ```
 Code/
-├── images/
-│   └── diagrama.svg
-├── src/
-│   ├── config/
-│   │   ├── BaseDatos.ts
-│   │   ├── ClienteApp.ts
-│   │   ├── RespuestaHttp.ts
-│   │   └── ServidorApp.ts
-│   │
-│   ├── modelos/
-│   │   ├── Cancelacion.ts
-│   │   ├── ContactoServicio.ts
-│   │   ├── Estancia.ts
-│   │   ├── Habitacion.ts
-│   │   ├── Huesped.ts
-│   │   ├── Reserva.ts
-│   │   ├── ReservaHuesped.ts
-│   │   ├── TiposHabitacion.ts
-│   │   └── Usuario.ts
-│   │
-│   ├── dtos/
-│   │   ├── Estancia/
-│   │   ├── Huesped/
-│   │   ├── Reserva/
-│   │   ├── TiposHabitacion/
-│   │   └── Usuario/
-│   │
-│   ├── repositorio/
-│   │   ├── RepositorioCancelacion.ts
-│   │   ├── RepositorioContactoServicio.ts
-│   │   ├── RepositorioEstancia.ts
-│   │   ├── RepositorioHabitacion.ts
-│   │   ├── RepositorioHuesped.ts
-│   │   ├── RepositorioReserva.ts
-│   │   ├── RepositorioReservaHuesped.ts
-│   │   ├── RepositorioTipoHabitacion.ts
-│   │   └── RepositorioUsuario.ts
-│   │
-│   ├── servicios/
-│   │   ├── estrategy/
-│   │   │   ├── EstrategiaHabitacion.ts
-│   │   │   ├── HabitacionSimple.ts
-│   │   │   ├── HabitacionSuite.ts
-│   │   │   ├── HabitacionDobleIndividual.ts
-│   │   │   └── HabitacionDobleMatrimonial.ts
-│   │   ├── factory/
-│   │   │   └── FabricaTipoHabitacion.ts
-│   │   ├── ServicioCancelacion.ts
-│   │   ├── ServicioContactoServicio.ts
-│   │   ├── ServicioEstancia.ts
-│   │   ├── ServicioHabitacion.ts
-│   │   ├── ServicioHuesped.ts
-│   │   ├── ServicioReserva.ts
-│   │   ├── ServicioReservaHuesped.ts
-│   │   ├── ServicioTipoHabitacion.ts
-│   │   └── ServicioUsuario.ts
-│   │
-│   ├── control/
-│   │   ├── ControladorCancelacion.ts
-│   │   ├── ControladorContactoServicio.ts
-│   │   ├── ControladorEstancia.ts
-│   │   ├── ControladorHabitacion.ts
-│   │   ├── ControladorHuesped.ts
-│   │   ├── ControladorReserva.ts
-│   │   ├── ControladorReservaHuesped.ts
-│   │   ├── ControladorTipoHabitacion.ts
-│   │   └── ControladorUsuario.ts
-│   │
-│   ├── rutas/
-│   │   ├── RutaCancelacion.ts
-│   │   ├── RutaContactoServicio.ts
-│   │   ├── RutaEstancia.ts
-│   │   ├── RutaHabitacion.ts
-│   │   ├── RutaHuesped.ts
-│   │   ├── RutaReserva.ts
-│   │   ├── RutaTipoHabitacion.ts
-│   │   └── RutaUsuario.ts
-│   │
-│   ├── presentacion/
-│   │   ├── index.html
-│   │   ├── index.tsx
-│   │   ├── index.css
-│   │   ├── Aplicacion.tsx
-│   │   ├── Aplicacion.css
-│   │   ├── estilos/
-│   │   │   ├── tokens.css
-│   │   │   └── reset.css
-│   │   ├── apis/
-│   │   │   ├── ApiContactoServicio.ts
-│   │   │   ├── ApiEstancia.ts
-│   │   │   ├── ApiHabitacion.ts
-│   │   │   ├── ApiHuesped.ts
-│   │   │   ├── ApiReserva.ts
-│   │   │   ├── ApiTipoHabitacion.ts
-│   │   │   └── ApiUsuario.ts
-│   │   ├── componentes/
-│   │   │   ├── comunes/
-│   │   │   │   ├── Alerta.tsx + Alerta.css
-│   │   │   │   ├── BarraLateral.tsx + BarraLateral.css
-│   │   │   │   ├── Boton.tsx + Boton.css
-│   │   │   │   ├── Cargando.tsx + Cargando.css
-│   │   │   │   ├── Insignia.tsx + Insignia.css
-│   │   │   │   └── Tarjeta.tsx + Tarjeta.css
-│   │   │   ├── estancias/
-│   │   │   │   ├── FormularioCheckin.tsx + FormularioCheckin.css
-│   │   │   │   └── FormularioCheckout.tsx + FormularioCheckout.css
-│   │   │   ├── habitaciones/
-│   │   │   │   └── SelectorHabitacion.tsx
-│   │   │   ├── huespedes/
-│   │   │   │   ├── BuscarHuesped.tsx + BuscarHuesped.css
-│   │   │   │   └── FormularioHuesped.tsx + FormularioHuesped.css
-│   │   │   ├── reservas/
-│   │   │   │   ├── FormularioReserva.tsx + FormularioReserva.css
-│   │   │   │   └── ListaReservas.tsx + ListaReservas.css
-│   │   │   └── servicios/
-│   │   │       └── ListaContactos.tsx + ListaContactos.css
-│   │   └── paginas/
-│   │       ├── PaginaCheckin.tsx
-│   │       ├── PaginaCheckout.tsx
-│   │       ├── PaginaHuespedes.tsx
-│   │       ├── PaginaReservas.tsx
-│   │       └── PaginaServicios.tsx
-│   │
-│   └── main.ts
-│
-├── package.json
-├── tsconfig.json
-└── vite.config.ts
+|_ package.json
+|_ tsconfig.json
+|_ tsconfig.node.json
+|_ tsconfig.server.json
+|_ vite.config.ts
+|_ images/
+|_ database/
+|   |_ dump_local.sql
+|_ src/
+    |_ main.ts
+    |_ config/
+    |   |_ BaseDatos.ts
+    |   |_ ClienteApp.ts
+    |   |_ RespuestaHttp.ts
+    |   |_ ServidorApp.ts
+    |_ modelos/
+    |   |_ Cancelacion.ts
+    |   |_ Configuracion.ts
+    |   |_ ContactoServicio.ts
+    |   |_ Estancia.ts
+    |   |_ Habitacion.ts
+    |   |_ Huesped.ts
+    |   |_ Reserva.ts
+    |   |_ ReservaHuesped.ts
+    |   |_ TiposHabitacion.ts
+    |   |_ Usuario.ts
+    |_ dtos/
+    |   |_ Estancia/
+    |   |   |_ RegistrarCheckinDTO.ts
+    |   |   |_ RegistrarCheckoutDTO.ts
+    |   |_ Huesped/
+    |   |   |_ ActualizarHuespedDTO.ts
+    |   |   |_ CrearHuespedDTO.ts
+    |   |_ Reserva/
+    |   |   |_ CancelarReservaDTO.ts
+    |   |   |_ CrearReservaDTO.ts
+    |   |_ TiposHabitacion/
+    |   |_ Usuario/
+    |_ repositorio/
+    |   |_ RepositorioCancelacion.ts
+    |   |_ RepositorioConfiguracion.ts
+    |   |_ RepositorioContactoServicio.ts
+    |   |_ RepositorioEstancia.ts
+    |   |_ RepositorioHabitacion.ts
+    |   |_ RepositorioHuesped.ts
+    |   |_ RepositorioReserva.ts
+    |   |_ RepositorioReservaHuesped.ts
+    |   |_ RepositorioTipoHabitacion.ts
+    |   |_ RepositorioUsuario.ts
+    |_ servicios/
+    |   |_ ServicioCancelacion.ts
+    |   |_ ServicioConfiguracion.ts
+    |   |_ ServicioContactoServicio.ts
+    |   |_ ServicioEstancia.ts
+    |   |_ ServicioHabitacion.ts
+    |   |_ ServicioHuesped.ts
+    |   |_ ServicioReserva.ts
+    |   |_ ServicioReservaHuesped.ts
+    |   |_ ServicioTipoHabitacion.ts
+    |   |_ ServicioUsuario.ts
+    |   |_ estrategy/
+    |   |_ factory/
+    |_ control/
+    |   |_ ControladorCancelacion.ts
+    |   |_ ControladorConfiguracion.ts
+    |   |_ ControladorContactoServicio.ts
+    |   |_ ControladorEstancia.ts
+    |   |_ ControladorHabitacion.ts
+    |   |_ ControladorHuesped.ts
+    |   |_ ControladorReserva.ts
+    |   |_ ControladorReservaHuesped.ts
+    |   |_ ControladorTipoHabitacion.ts
+    |   |_ ControladorUsuario.ts
+    |_ rutas/
+    |   |_ RutaCancelacion.ts
+    |   |_ RutaConfiguracion.ts
+    |   |_ RutaContactoServicio.ts
+    |   |_ RutaEstancia.ts
+    |   |_ RutaHabitacion.ts
+    |   |_ RutaHuesped.ts
+    |   |_ RutaReserva.ts
+    |   |_ RutaTipoHabitacion.ts
+    |   |_ RutaUsuario.ts
+    |_ presentacion/
+    |   |_ Aplicacion.css
+    |   |_ Aplicacion.tsx
+    |   |_ index.css
+    |   |_ index.html
+    |   |_ index.tsx
+    |   |_ apis/
+    |   |   |_ ApiConfiguracion.ts
+    |   |   |_ ApiContactoServicio.ts
+    |   |   |_ ApiEstancia.ts
+    |   |   |_ ApiHabitacion.ts
+    |   |   |_ ApiHuesped.ts
+    |   |   |_ ApiReserva.ts
+    |   |   |_ ApiTipoHabitacion.ts
+    |   |   |_ ApiUsuario.ts
+    |   |_ componentes/
+    |   |   |_ comunes/
+    |   |   |   |_ Alerta.css
+    |   |   |   |_ Alerta.tsx
+    |   |   |   |_ BarraLateral.css
+    |   |   |   |_ BarraLateral.tsx
+    |   |   |   |_ Boton.css
+    |   |   |   |_ Boton.tsx
+    |   |   |   |_ Cargando.css
+    |   |   |   |_ Cargando.tsx
+    |   |   |   |_ Insignia.css
+    |   |   |   |_ Insignia.tsx
+    |   |   |   |_ Tarjeta.css
+    |   |   |   |_ Tarjeta.tsx
+    |   |   |_ configuracion/
+    |   |   |   |_ Configuracion.css
+    |   |   |   |_ Configuracion.tsx
+    |   |   |_ estancias/
+    |   |   |   |_ FormularioCheckin.css
+    |   |   |   |_ FormularioCheckin.tsx
+    |   |   |   |_ FormularioCheckout.css
+    |   |   |   |_ FormularioCheckout.tsx
+    |   |   |_ habitaciones/
+    |   |   |   |_ SelectorHabitacion.tsx
+    |   |   |_ huespedes/
+    |   |   |   |_ BuscarHuesped.css
+    |   |   |   |_ BuscarHuesped.tsx
+    |   |   |   |_ FormularioHuesped.css
+    |   |   |   |_ FormularioHuesped.tsx
+    |   |   |_ reservas/
+    |   |   |   |_ FormularioReserva.css
+    |   |   |   |_ FormularioReserva.tsx
+    |   |   |   |_ ListaReservas.css
+    |   |   |   |_ ListaReservas.tsx
+    |   |   |_ servicios/
+    |   |   |   |_ ListaContactos.css
+    |   |   |   |_ ListaContactos.tsx
+    |   |_ estilos/
+    |   |   |_ reset.css
+    |   |   |_ tokens.css
+    |   |_ paginas/
+    |   |   |_ PaginaCheckin.tsx
+    |   |   |_ PaginaCheckout.tsx
+    |   |   |_ PaginaHuespedes.tsx
+    |   |   |_ PaginaReservas.tsx
+    |   |   |_ PaginaServicios.tsx
+    |   |_ utiles/
+    |   |   |_ DecodificarTexto.ts
 ```
 
 ---
