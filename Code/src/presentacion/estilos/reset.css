@@ -6,11 +6,41 @@
   padding: 0;
 }
 
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
   font-family: var(--fuente);
   background: var(--fondo);
   color: var(--texto);
-  line-height: 1.5;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+* {
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  scrollbar-width: thin;
 }
 
 button {
@@ -24,6 +54,15 @@ input,
 select,
 textarea {
   font: inherit;
+  color: inherit;
+}
+
+select {
+  cursor: pointer;
+}
+
+textarea {
+  resize: vertical;
 }
 
 table {
@@ -33,9 +72,9 @@ table {
 
 th,
 td {
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--texto-muy-suave);
 }
 
 th {
@@ -43,5 +82,10 @@ th {
   color: var(--texto-suave);
   font-size: 0.85rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.5px;
+  background: var(--fondo);
+}
+
+tr:hover {
+  background: rgba(0, 113, 227, 0.02);
 }

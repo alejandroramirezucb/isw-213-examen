@@ -7,8 +7,19 @@ import { BuscarHuesped } from '../huespedes/BuscarHuesped';
 import { SelectorHabitacion } from '../habitaciones/SelectorHabitacion';
 
 type Huesped = { id: number; nombres: string; apellidos: string };
-type TipoHabitacion = { id: number; nombre: string; capacidad_maxima: number; precio_referencia: number };
-type Habitacion = { id: number; numero_habitacion: string; piso: number; estado: string; tipo_habitacion?: TipoHabitacion };
+type TipoHabitacion = {
+  id: number;
+  nombre: string;
+  capacidad_maxima: number;
+  precio_referencia: number;
+};
+type Habitacion = {
+  id: number;
+  numero_habitacion: string;
+  piso: number;
+  estado: string;
+  tipo_habitacion?: TipoHabitacion;
+};
 type Props = { onCreada?: () => void };
 
 type State = {
@@ -42,13 +53,14 @@ export class FormularioReserva extends Component<Props, State> {
 
   crear = async (evento: SyntheticEvent) => {
     evento.preventDefault();
-    const { titular, idHabitacion, checkin, checkout, personas, notas } = this.state;
-    
+    const { titular, idHabitacion, checkin, checkout, personas, notas } =
+      this.state;
+
     if (!titular || !idHabitacion) {
       this.setState({ error: 'Selecciona huésped titular y habitación' });
       return;
     }
-    
+
     this.setState({ cargando: true, error: null, exito: null });
     const resultado = await ApiReserva.crear({
       id_huesped_titular: titular.id,
@@ -58,13 +70,13 @@ export class FormularioReserva extends Component<Props, State> {
       cantidad_personas: personas,
       notas: notas || undefined,
     });
-    
+
     if (resultado.ok) {
       this.setState({
         exito: `Reserva #${resultado.val.id} creada exitosamente`,
         cargando: false,
       });
-      
+
       if (this.props.onCreada) {
         this.props.onCreada();
       }
@@ -75,7 +87,8 @@ export class FormularioReserva extends Component<Props, State> {
 
   calcularCostoTotal = () => {
     const { habitacionSeleccionada, checkin, checkout } = this.state;
-    if (!habitacionSeleccionada?.tipo_habitacion || !checkin || !checkout) return 0;
+    if (!habitacionSeleccionada?.tipo_habitacion || !checkin || !checkout)
+      return 0;
 
     const inicio = new Date(checkin);
     const fin = new Date(checkout);
@@ -100,9 +113,21 @@ export class FormularioReserva extends Component<Props, State> {
     } = this.state;
     const costoTotal = this.calcularCostoTotal();
     return (
-      <form className='formulario-reserva' onSubmit={this.crear}>
-        {error && <Alerta tipo='error' mensaje={error} />}
-        {exito && <Alerta tipo='exito' mensaje={exito} />}
+      <form
+        className='formulario-reserva'
+        onSubmit={this.crear}>
+        {error && (
+          <Alerta
+            tipo='error'
+            mensaje={error}
+          />
+        )}
+        {exito && (
+          <Alerta
+            tipo='exito'
+            mensaje={exito}
+          />
+        )}
         <BuscarHuesped
           label='Huésped titular'
           onSeleccionar={(huesped) => this.setState({ titular: huesped })}
@@ -116,7 +141,12 @@ export class FormularioReserva extends Component<Props, State> {
           <label className='formulario-reserva__label'>Habitación</label>
           <SelectorHabitacion
             valor={idHabitacion}
-            onSeleccionar={(identificador, hab) => this.setState({ idHabitacion: identificador, habitacionSeleccionada: hab || null })}
+            onSeleccionar={(identificador, hab) =>
+              this.setState({
+                idHabitacion: identificador,
+                habitacionSeleccionada: hab || null,
+              })
+            }
           />
         </div>
         <div className='formulario-reserva__fila'>
@@ -126,7 +156,9 @@ export class FormularioReserva extends Component<Props, State> {
             type='date'
             min={this.minDate}
             value={checkin}
-            onChange={(evento) => this.setState({ checkin: evento.target.value })}
+            onChange={(evento) =>
+              this.setState({ checkin: evento.target.value })
+            }
             required
           />
         </div>
@@ -137,18 +169,24 @@ export class FormularioReserva extends Component<Props, State> {
             type='date'
             min={this.minDate}
             value={checkout}
-            onChange={(evento) => this.setState({ checkout: evento.target.value })}
+            onChange={(evento) =>
+              this.setState({ checkout: evento.target.value })
+            }
             required
           />
         </div>
         <div className='formulario-reserva__fila'>
-          <label className='formulario-reserva__label'>Cantidad de personas</label>
+          <label className='formulario-reserva__label'>
+            Cantidad de personas
+          </label>
           <input
             className='formulario-reserva__campo'
             type='number'
             min={1}
             value={personas}
-            onChange={(evento) => this.setState({ personas: Number(evento.target.value) })}
+            onChange={(evento) =>
+              this.setState({ personas: Number(evento.target.value) })
+            }
             required
           />
         </div>
@@ -162,18 +200,21 @@ export class FormularioReserva extends Component<Props, State> {
           />
         </div>
         {costoTotal > 0 && (
-          <div style={{
-            backgroundColor: '#f0f0f0',
-            padding: '1rem',
-            borderRadius: '0.5rem',
-            marginBottom: '1rem',
-            fontWeight: 'bold',
-            fontSize: '1.1rem'
-          }}>
-            Costo total: S/. {costoTotal.toFixed(2)}
+          <div className='formulario-reserva__costo'>
+            <div className='formulario-reserva__costo-etiqueta'>
+              Costo total estimado
+            </div>
+            <div>
+              <span className='formulario-reserva__costo-valor'>
+                S/. {costoTotal.toFixed(2)}
+              </span>
+              <span className='formulario-reserva__costo-divisa'> SOL</span>
+            </div>
           </div>
         )}
-        <Boton type='submit' disabled={cargando}>
+        <Boton
+          type='submit'
+          disabled={cargando}>
           Crear reserva
         </Boton>
       </form>

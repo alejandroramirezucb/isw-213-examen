@@ -20,8 +20,10 @@ type State = {
   tipo: string;
   numero: string;
   huesped: Huesped | null;
+  huespedes: Huesped[];
   error: string | null;
   cargando: boolean;
+  cargandoLista: boolean;
 };
 
 export class BuscarHuesped extends Component<Props, State> {
@@ -29,9 +31,20 @@ export class BuscarHuesped extends Component<Props, State> {
     tipo: 'carnet',
     numero: '',
     huesped: null,
+    huespedes: [],
     error: null,
     cargando: false,
+    cargandoLista: true,
   };
+
+  async componentDidMount() {
+    const resultado = await ApiHuesped.listar();
+    if (resultado.ok) {
+      this.setState({ huespedes: resultado.val, cargandoLista: false });
+    } else {
+      this.setState({ cargandoLista: false });
+    }
+  }
 
   buscar = async () => {
     const { tipo, numero } = this.state;
@@ -55,7 +68,8 @@ export class BuscarHuesped extends Component<Props, State> {
   };
 
   render() {
-    const { tipo, numero, huesped, error, cargando } = this.state;
+    const { tipo, numero, huesped, huespedes, error, cargando, cargandoLista } =
+      this.state;
     const { label = 'Buscar huésped' } = this.props;
 
     return (
@@ -95,6 +109,31 @@ export class BuscarHuesped extends Component<Props, State> {
           <div className='buscar-huesped__resultado'>
             {huesped.nombres} {huesped.apellidos} — {huesped.tipo_documento}:{' '}
             {huesped.numero_documento}
+          </div>
+        )}
+        {!cargandoLista && huespedes.length > 0 && (
+          <div className='buscar-huesped__lista'>
+            <p className='buscar-huesped__etiqueta-lista'>
+              Huéspedes registrados
+            </p>
+            {huespedes.map((h) => (
+              <div
+                key={h.id}
+                className='buscar-huesped__item'
+                onClick={() => {
+                  this.setState({ huesped: h });
+                  if (this.props.onSeleccionar) {
+                    this.props.onSeleccionar(h);
+                  }
+                }}>
+                <div className='buscar-huesped__item-nombre'>
+                  {h.nombres} {h.apellidos}
+                </div>
+                <div className='buscar-huesped__item-doc'>
+                  {h.tipo_documento}: {h.numero_documento}
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

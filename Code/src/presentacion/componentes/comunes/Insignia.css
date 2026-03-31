@@ -1,39 +1,81 @@
 .insignia {
-  display: inline-block;
-  padding: 0.2rem 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.8rem;
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.4px;
+  border: 1px solid;
+  transition: all var(--transicion-rapida);
+}
+
+.insignia::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .insignia--pendiente {
-  background: #fef3c7;
-  color: #92400e;
+  background: rgba(255, 159, 64, 0.08);
+  color: #994d1a;
+  border-color: rgba(255, 159, 64, 0.3);
+}
+
+.insignia--pendiente::before {
+  background: #ff9f40;
 }
 
 .insignia--activa {
-  background: #dcfce7;
-  color: #15803d;
+  background: rgba(52, 199, 89, 0.08);
+  color: #107d3c;
+  border-color: rgba(52, 199, 89, 0.3);
+}
+
+.insignia--activa::before {
+  background: var(--exito);
 }
 
 .insignia--completada {
-  background: #e0e7ff;
-  color: #3730a3;
+  background: rgba(0, 113, 227, 0.08);
+  color: #0047a3;
+  border-color: rgba(0, 113, 227, 0.3);
+}
+
+.insignia--completada::before {
+  background: var(--primario);
 }
 
 .insignia--cancelada {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: rgba(255, 59, 48, 0.08);
+  color: #c41600;
+  border-color: rgba(255, 59, 48, 0.3);
+}
+
+.insignia--cancelada::before {
+  background: var(--error);
 }
 
 .insignia--disponible {
-  background: #dcfce7;
-  color: #15803d;
+  background: rgba(52, 199, 89, 0.08);
+  color: #107d3c;
+  border-color: rgba(52, 199, 89, 0.3);
+}
+
+.insignia--disponible::before {
+  background: var(--exito);
 }
 
 .insignia--ocupada {
-  background: #fef3c7;
-  color: #92400e;
+  background: rgba(255, 159, 64, 0.08);
+  color: #994d1a;
+  border-color: rgba(255, 159, 64, 0.3);
+}
+
+.insignia--ocupada::before {
+  background: #ff9f40;
 }

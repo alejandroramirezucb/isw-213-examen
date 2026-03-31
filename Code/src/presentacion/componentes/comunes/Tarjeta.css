@@ -1,16 +1,36 @@
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .tarjeta {
   background: var(--superficie);
-  border-radius: var(--radio);
+  border-radius: var(--radio-sm);
+  border: 1px solid var(--texto-muy-suave);
   box-shadow: var(--sombra);
-  padding: 1.5rem;
+  padding: 1.75rem;
   margin-bottom: 1.5rem;
+  transition: all var(--transicion-normal);
+  animation: slideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.tarjeta:hover {
+  box-shadow: var(--sombra-md);
+  border-color: var(--texto-suave);
 }
 
 .tarjeta__titulo {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 600;
-  color: var(--primario);
-  margin-bottom: 1.25rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #e5e7eb;
+  color: var(--texto);
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--texto-muy-suave);
+  letter-spacing: -0.3px;
 }

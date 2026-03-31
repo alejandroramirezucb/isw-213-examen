@@ -1,10 +1,35 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .lista-contactos__tabla {
   background: var(--superficie);
-  border-radius: var(--radio);
+  border-radius: var(--radio-sm);
+  border: 1px solid var(--texto-muy-suave);
+  box-shadow: var(--sombra);
+  animation: fadeIn 0.4s ease-out;
+  overflow: hidden;
 }
 
 .lista-contactos__vacio {
   text-align: center;
   color: var(--texto-suave);
-  padding: 2rem;
+  padding: 3rem 2rem;
+  font-size: 0.95rem;
+}
+
+.lista-contactos__vacio::before {
+  content: '';
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: var(--fondo);
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  border: 2px solid var(--texto-muy-suave);
 }
