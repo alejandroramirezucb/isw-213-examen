@@ -20,15 +20,6 @@
   gap: 0.75rem;
 }
 
-.barra-lateral__logo::before {
-  content: '';
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, var(--primario) 0%, #0052d4 100%);
-  border-radius: 8px;
-  flex-shrink: 0;
-}
-
 .barra-lateral__nav {
   display: flex;
   flex-direction: column;

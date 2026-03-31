@@ -1,6 +1,7 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import { AppDataSource } from './BaseDatos';
 import rutasCancelacion from '../rutas/RutaCancelacion';
+import rutasConfiguracion from '../rutas/RutaConfiguracion';
 import rutasContactoServicio from '../rutas/RutaContactoServicio';
 import rutasEstancia from '../rutas/RutaEstancia';
 import rutasHabitacion from '../rutas/RutaHabitacion';
@@ -27,7 +28,7 @@ export class ServidorApp {
     res.header('Access-Control-Allow-Origin', '*');
     res.header(
       'Access-Control-Allow-Methods',
-      'GET, POST, PUT, DELETE, OPTIONS',
+      'GET, POST, PUT, PATCH, DELETE, OPTIONS',
     );
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
@@ -42,6 +43,7 @@ export class ServidorApp {
     this.app.use('/api/contacto-servicio', rutasContactoServicio);
     this.app.use('/api/usuario', rutasUsuario);
     this.app.use('/api/cancelacion', rutasCancelacion);
+    this.app.use('/api/configuracion', rutasConfiguracion);
   }
 
   async iniciar(): Promise<void> {

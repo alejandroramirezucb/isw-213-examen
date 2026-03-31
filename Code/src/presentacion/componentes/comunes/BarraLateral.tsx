@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import './BarraLateral.css';
 
-type Pagina = 'reservas' | 'huespedes' | 'checkin' | 'checkout' | 'servicios';
+type Pagina = 'reservas' | 'huespedes' | 'checkin' | 'checkout' | 'servicios' | 'configuracion';
 type Props = { pagina: Pagina; onNavegar: (p: Pagina) => void };
 
 const ITEMS: { pagina: Pagina; etiqueta: string }[] = [
@@ -10,6 +10,7 @@ const ITEMS: { pagina: Pagina; etiqueta: string }[] = [
   { pagina: 'checkin',   etiqueta: 'Check-in' },
   { pagina: 'checkout',  etiqueta: 'Check-out' },
   { pagina: 'servicios', etiqueta: 'Servicios' },
+  { pagina: 'configuracion', etiqueta: 'Configuración' },
 ];
 
 export class BarraLateral extends Component<Props> {

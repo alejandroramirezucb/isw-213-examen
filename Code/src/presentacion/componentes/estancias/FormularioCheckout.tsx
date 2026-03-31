@@ -12,6 +12,7 @@ type Reserva = {
   fecha_checkout: string;
   estado: string;
   habitacion?: { id: number; numero_habitacion: string };
+  huesped_titular?: { nombres: string; apellidos: string };
 };
 
 type State = {
@@ -22,6 +23,8 @@ type State = {
   error: string | null;
   exito: string | null;
   cargando: boolean;
+  busqueda: string;
+  reservasFiltradas: Reserva[];
 };
 
 export class FormularioCheckout extends Component<{}, State> {
@@ -33,6 +36,8 @@ export class FormularioCheckout extends Component<{}, State> {
     error: null,
     exito: null,
     cargando: true,
+    busqueda: '',
+    reservasFiltradas: [],
   };
 
   async componentDidMount() {
@@ -42,11 +47,34 @@ export class FormularioCheckout extends Component<{}, State> {
       const reservasActivas = resultado.val.filter(
         (reserva) => reserva.estado === 'ACTIVA',
       );
-      this.setState({ reservas: reservasActivas, cargando: false });
+      this.setState({ reservas: reservasActivas, reservasFiltradas: reservasActivas, cargando: false });
     } else {
       this.setState({ error: resultado.val, cargando: false });
     }
   }
+
+  filtrarReservas = (termino: string) => {
+    const { reservas } = this.state;
+    if (!termino.trim()) {
+      this.setState({ busqueda: termino, reservasFiltradas: reservas });
+      return;
+    }
+
+    const filtradas = reservas.filter((r) => {
+      const id = r.id.toString();
+      const habitacion = r.habitacion?.numero_habitacion || '';
+      const titular = `${r.huesped_titular?.nombres || ''} ${r.huesped_titular?.apellidos || ''}`.toLowerCase();
+      const termLower = termino.toLowerCase();
+
+      return (
+        id.includes(termino) ||
+        habitacion.includes(termLower) ||
+        titular.includes(termLower)
+      );
+    });
+
+    this.setState({ busqueda: termino, reservasFiltradas: filtradas });
+  };
 
   registrar = async (evento: SyntheticEvent) => {
     evento.preventDefault();
@@ -82,11 +110,15 @@ export class FormularioCheckout extends Component<{}, State> {
       error,
       exito,
       cargando,
+      busqueda,
+      reservasFiltradas,
     } = this.state;
 
     if (cargando && reservas.length === 0) {
       return <Cargando />;
     }
+
+    const reservaSeleccionada = reservas.find((r) => r.id === idReserva);
 
     return (
       <form
@@ -105,7 +137,18 @@ export class FormularioCheckout extends Component<{}, State> {
           />
         )}
         <div className='formulario-checkout__fila'>
-          <label className='formulario-checkout__label'>Estancia activa</label>
+          <label className='formulario-checkout__label'>Buscar estancia</label>
+          <input
+            className='formulario-checkout__campo'
+            type='text'
+            placeholder='Por ID, habitación o nombre del huésped'
+            value={busqueda}
+            onChange={(evento) => this.filtrarReservas(evento.target.value)}
+          />
+        </div>
+
+        <div className='formulario-checkout__fila'>
+          <label className='formulario-checkout__label'>Seleccionar estancia</label>
           <select
             className='formulario-checkout__campo'
             value={idReserva ?? ''}
@@ -114,19 +157,32 @@ export class FormularioCheckout extends Component<{}, State> {
             }
             required>
             <option value=''>Seleccionar estancia</option>
-            {reservas.map((reserva) => (
+            {reservasFiltradas.map((reserva) => (
               <option
                 key={reserva.id}
                 value={reserva.id}>
-                #{reserva.id} —{' '}
-                {reserva.habitacion
-                  ? `Hab. ${reserva.habitacion.numero_habitacion}`
-                  : ''}{' '}
-                — {reserva.fecha_checkin}
+                #{reserva.id} — Hab. {reserva.habitacion?.numero_habitacion || 'N/A'} — {reserva.huesped_titular?.nombres || ''} {reserva.huesped_titular?.apellidos || ''} — {reserva.fecha_checkin}
               </option>
             ))}
           </select>
         </div>
+
+        {reservaSeleccionada && (
+          <div className='formulario-checkout__info-reserva'>
+            <div className='formulario-checkout__info-item'>
+              <span className='formulario-checkout__info-label'>ID:</span>
+              <span className='formulario-checkout__info-valor'>#{reservaSeleccionada.id}</span>
+            </div>
+            <div className='formulario-checkout__info-item'>
+              <span className='formulario-checkout__info-label'>Habitación:</span>
+              <span className='formulario-checkout__info-valor'>Hab. {reservaSeleccionada.habitacion?.numero_habitacion || 'N/A'}</span>
+            </div>
+            <div className='formulario-checkout__info-item'>
+              <span className='formulario-checkout__info-label'>Check-out previsto:</span>
+              <span className='formulario-checkout__info-valor'>{reservaSeleccionada.fecha_checkout}</span>
+            </div>
+          </div>
+        )}
         <div className='formulario-checkout__fila'>
           <label className='formulario-checkout__label'>Registrado por</label>
           <input

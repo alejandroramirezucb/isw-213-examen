@@ -80,9 +80,9 @@ export class BuscarHuesped extends Component<Props, State> {
             className='buscar-huesped__select'
             value={tipo}
             onChange={(evento) => this.setState({ tipo: evento.target.value })}>
-            <option value='carnet'>Carné</option>
+            <option value='carnet'>Carnet</option>
             <option value='pasaporte'>Pasaporte</option>
-            <option value='carnet_extranjero'>Carné de extranjería</option>
+            <option value='carnet_extranjero'>Carnet extranjero</option>
             <option value='nit'>NIT</option>
           </select>
           <input

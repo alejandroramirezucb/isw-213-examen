@@ -1,2 +1,82 @@
 @import './estilos/tokens.css';
 @import './estilos/reset.css';
+
+/* ─── Layout global ─── */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#raiden {
+  flex: 1;
+}
+
+/* ─── Footer ─── */
+footer {
+  margin-top: 4rem;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--texto-muy-suave);
+  background: var(--superficie);
+  text-align: center;
+}
+
+.footer__contenido {
+  font-size: 0.875rem;
+  color: var(--texto-muy-suave);
+  letter-spacing: 0.2px;
+}
+
+/* ─── Date / time inputs ─── */
+input[type='date'],
+input[type='time'] {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  padding-right: 2.5rem;
+  cursor: pointer;
+  color-scheme: light;
+}
+
+/* icono del calendario – solo Chrome/Edge */
+input[type='date']::-webkit-calendar-picker-indicator,
+input[type='time']::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity var(--transicion-rapida);
+  filter: invert(35%) sepia(80%) saturate(600%) hue-rotate(197deg);
+}
+
+input[type='date']:hover::-webkit-calendar-picker-indicator,
+input[type='time']:hover::-webkit-calendar-picker-indicator {
+  opacity: 0.9;
+}
+
+input[type='date']:focus,
+input[type='time']:focus {
+  border-color: var(--primario);
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+  outline: none;
+}
+
+/* ─── Time input special (Configuracion hora_limite) ─── */
+.configuracion__campo[type='time'] {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--primario);
+  padding: 0.75rem 1rem;
+  text-align: center;
+  background: rgba(0, 113, 227, 0.04);
+  border-color: rgba(0, 113, 227, 0.2);
+}
+
+.configuracion__campo[type='time']:focus {
+  background: rgba(0, 113, 227, 0.08);
+}

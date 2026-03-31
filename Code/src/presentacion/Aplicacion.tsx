@@ -6,8 +6,9 @@ import { PaginaHuespedes } from './paginas/PaginaHuespedes';
 import { PaginaCheckin } from './paginas/PaginaCheckin';
 import { PaginaCheckout } from './paginas/PaginaCheckout';
 import { PaginaServicios } from './paginas/PaginaServicios';
+import { Configuracion } from './componentes/configuracion/Configuracion';
 
-type Pagina = 'reservas' | 'huespedes' | 'checkin' | 'checkout' | 'servicios';
+type Pagina = 'reservas' | 'huespedes' | 'checkin' | 'checkout' | 'servicios' | 'configuracion';
 type State = { pagina: Pagina };
 
 export class Aplicacion extends Component<{}, State> {
@@ -28,6 +29,7 @@ export class Aplicacion extends Component<{}, State> {
           {pagina === 'checkin'   && <PaginaCheckin />}
           {pagina === 'checkout'  && <PaginaCheckout />}
           {pagina === 'servicios' && <PaginaServicios />}
+          {pagina === 'configuracion' && <Configuracion />}
         </main>
       </div>
     );

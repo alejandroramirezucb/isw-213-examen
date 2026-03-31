@@ -3,6 +3,7 @@ import './ListaContactos.css';
 import ApiContactoServicio from '../../apis/ApiContactoServicio';
 import { Cargando } from '../comunes/Cargando';
 import { Alerta } from '../comunes/Alerta';
+import { decodificarTexto } from '../../utiles/DecodificarTexto';
 
 type ContactoServicio = {
   id: number;
@@ -25,7 +26,7 @@ export class ListaContactos extends Component<{}, State> {
 
   async componentDidMount() {
     const resultado = await ApiContactoServicio.listarActivos();
-    
+
     if (resultado.ok) {
       this.setState({ contactos: resultado.val, cargando: false });
     } else {
@@ -35,14 +36,19 @@ export class ListaContactos extends Component<{}, State> {
 
   render() {
     const { contactos, cargando, error } = this.state;
-    
+
     if (cargando) {
       return <Cargando />;
     }
-    
+
     return (
       <div className='lista-contactos'>
-        {error && <Alerta tipo='error' mensaje={error} />}
+        {error && (
+          <Alerta
+            tipo='error'
+            mensaje={error}
+          />
+        )}
         {contactos.length === 0 && (
           <p className='lista-contactos__vacio'>
             No hay contactos de servicio activos
@@ -60,8 +66,8 @@ export class ListaContactos extends Component<{}, State> {
             <tbody>
               {contactos.map((contacto) => (
                 <tr key={contacto.id}>
-                  <td>{contacto.nombre_servicio}</td>
-                  <td>{contacto.persona_contacto ?? '—'}</td>
+                  <td>{decodificarTexto(contacto.nombre_servicio)}</td>
+                  <td>{decodificarTexto(contacto.persona_contacto) || '—'}</td>
                   <td>{contacto.telefono ?? '—'}</td>
                 </tr>
               ))}

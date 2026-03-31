@@ -10,4 +10,5 @@ export const AppDataSource = new DataSource({
   synchronize: true,
   logging: false,
   entities: ['src/modelos/**/*.ts'],
+  extra: { client_encoding: 'UTF-8' },
 });

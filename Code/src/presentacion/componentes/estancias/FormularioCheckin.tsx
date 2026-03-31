@@ -11,6 +11,7 @@ type Reserva = {
   fecha_checkin: string;
   fecha_checkout: string;
   habitacion?: { id: number; numero_habitacion: string };
+  huesped_titular?: { nombres: string; apellidos: string };
 };
 
 type State = {
@@ -21,6 +22,8 @@ type State = {
   error: string | null;
   exito: string | null;
   cargando: boolean;
+  busqueda: string;
+  reservasFiltradas: Reserva[];
 };
 
 export class FormularioCheckin extends Component<{}, State> {
@@ -32,16 +35,41 @@ export class FormularioCheckin extends Component<{}, State> {
     error: null,
     exito: null,
     cargando: true,
+    busqueda: '',
+    reservasFiltradas: [],
   };
 
   async componentDidMount() {
     const resultado = await ApiReserva.listarActivas();
     if (resultado.ok) {
-      this.setState({ reservas: resultado.val, cargando: false });
+      this.setState({ reservas: resultado.val, reservasFiltradas: resultado.val, cargando: false });
     } else {
       this.setState({ error: resultado.val, cargando: false });
     }
   }
+
+  filtrarReservas = (termino: string) => {
+    const { reservas } = this.state;
+    if (!termino.trim()) {
+      this.setState({ busqueda: termino, reservasFiltradas: reservas });
+      return;
+    }
+
+    const filtradas = reservas.filter((r) => {
+      const id = r.id.toString();
+      const habitacion = r.habitacion?.numero_habitacion || '';
+      const titular = `${r.huesped_titular?.nombres || ''} ${r.huesped_titular?.apellidos || ''}`.toLowerCase();
+      const termLower = termino.toLowerCase();
+
+      return (
+        id.includes(termino) ||
+        habitacion.includes(termLower) ||
+        titular.includes(termLower)
+      );
+    });
+
+    this.setState({ busqueda: termino, reservasFiltradas: filtradas });
+  };
 
   registrar = async (evento: SyntheticEvent) => {
     evento.preventDefault();
@@ -77,10 +105,14 @@ export class FormularioCheckin extends Component<{}, State> {
       error,
       exito,
       cargando,
+      busqueda,
+      reservasFiltradas,
     } = this.state;
     if (cargando && reservas.length === 0) {
       return <Cargando />;
     }
+
+    const reservaSeleccionada = reservas.find((r) => r.id === idReserva);
 
     return (
       <form
@@ -99,7 +131,18 @@ export class FormularioCheckin extends Component<{}, State> {
           />
         )}
         <div className='formulario-checkin__fila'>
-          <label className='formulario-checkin__label'>Reserva</label>
+          <label className='formulario-checkin__label'>Buscar reserva</label>
+          <input
+            className='formulario-checkin__campo'
+            type='text'
+            placeholder='Por ID, habitación o nombre del huésped'
+            value={busqueda}
+            onChange={(evento) => this.filtrarReservas(evento.target.value)}
+          />
+        </div>
+
+        <div className='formulario-checkin__fila'>
+          <label className='formulario-checkin__label'>Seleccionar reserva</label>
           <select
             className='formulario-checkin__campo'
             value={idReserva ?? ''}
@@ -108,19 +151,32 @@ export class FormularioCheckin extends Component<{}, State> {
             }
             required>
             <option value=''>Seleccionar reserva</option>
-            {reservas.map((reserva) => (
+            {reservasFiltradas.map((reserva) => (
               <option
                 key={reserva.id}
                 value={reserva.id}>
-                #{reserva.id} —{' '}
-                {reserva.habitacion
-                  ? `Hab. ${reserva.habitacion.numero_habitacion}`
-                  : ''}{' '}
-                — {reserva.fecha_checkin}
+                #{reserva.id} — Hab. {reserva.habitacion?.numero_habitacion || 'N/A'} — {reserva.huesped_titular?.nombres || ''} {reserva.huesped_titular?.apellidos || ''} — {reserva.fecha_checkin}
               </option>
             ))}
           </select>
         </div>
+
+        {reservaSeleccionada && (
+          <div className='formulario-checkin__info-reserva'>
+            <div className='formulario-checkin__info-item'>
+              <span className='formulario-checkin__info-label'>ID:</span>
+              <span className='formulario-checkin__info-valor'>#{reservaSeleccionada.id}</span>
+            </div>
+            <div className='formulario-checkin__info-item'>
+              <span className='formulario-checkin__info-label'>Habitación:</span>
+              <span className='formulario-checkin__info-valor'>Hab. {reservaSeleccionada.habitacion?.numero_habitacion || 'N/A'}</span>
+            </div>
+            <div className='formulario-checkin__info-item'>
+              <span className='formulario-checkin__info-label'>Check-in:</span>
+              <span className='formulario-checkin__info-valor'>{reservaSeleccionada.fecha_checkin}</span>
+            </div>
+          </div>
+        )}
         <div className='formulario-checkin__fila'>
           <label className='formulario-checkin__label'>Registrado por</label>
           <input
