@@ -1,5 +1,11 @@
 # Raidenhotel
 
+## Descripción general
+
+**Raidenhotel** es un sistema de gestión de hoteles web desarrollado con una arquitectura **cliente-servidor**. Permite a recepcionistas administrar huéspedes, reservas, check-ins, check-outs y contactos de servicio.
+
+---
+
 ## Instrucciones de ejecución
 
 **Requisitos** Node.js 18+ y PostgreSQL
@@ -14,10 +20,7 @@
 2. Crear la base de datos y cargar el schema:
 
    ```bash
-   # Crear la base de datos
    createdb -U postgres hotel_db
-
-   # Cargar el dump en la base de datos
    psql -U postgres -d hotel_db -f database/dump_local.sql
    ```
 
@@ -27,7 +30,7 @@
    DB_HOST=localhost
    DB_PORT=5432
    DB_USERNAME=postgres
-   DB_PASSWORD=<tu_contraseña>
+   DB_PASSWORD=<contraseña>
    DB_NAME=hotel_db
    ```
 
@@ -42,33 +45,116 @@
 
 ---
 
+## Funcionalidades implementadas
+
+| HU    | Funcionalidad                        | Página frontend          |
+| ----- | ------------------------------------ | ------------------------ |
+| HU-01 | Registrar y buscar huéspedes         | Huéspedes                |
+| HU-02 | Crear reserva de habitación          | Reservas → Nueva reserva |
+| HU-03 | Consultar reservas activas/futuras   | Reservas → Lista         |
+| HU-04 | Registrar check-in                   | Check-in                 |
+| HU-05 | Seleccionar tipo de habitación       | Reservas (selector)      |
+| HU-06 | Visualizar contactos de servicio     | Servicios                |
+| HU-08 | Registrar check-out (late check-out) | Check-out                |
+
+---
+
 ## Arquitectura de software
 
-El sistema sigue una arquitectura **cliente-servidor** separada en tres capas:
+### Diagrama de tecnologías
 
-- **Frontend** — Se usa React corre en el puerto 3000. Se comunica con el backend a través de `Code/src/presentacion/api`.
-- **Backend** — Se usa Express (Node.js + TypeScript) corriendo en el puerto 5000. Esta organizado en Rutas → Controladores → Servicios → Repositorios → Modelos.
-- **Base de datos** — PostgreSQL y TypeORM (que gestiona la conexión y sincronización con el esquema).
+![Diagrama de tecnologias](Code/images/diagrama.svg)
+
+### Arquitectura Cliente-Servidor con MVC
+
+El sistema sigue una arquitectura **cliente-servidor** con separación en capas MVC:
 
 ```
-Frontend (React :3000)
-       ↓ /api
-Backend (Express :5000)
-       ↓ TypeORM
-PostgreSQL
+┌─────────────────────────────────────────────────────────┐
+│                     VISTA (Frontend)                    │
+│   React SPA — src/presentacion/    :3000                │
+│   Componentes + CSS                                     │
+│           ↕  fetch /api  (Vite proxy)                   │
+├─────────────────────────────────────────────────────────┤
+│                  CONTROLADOR (Backend)                  │
+│   Rutas → Controladores → Servicios    :5000            │
+│   Express 5 + ts-results                                │
+│           ↕  TypeORM                                    │
+├─────────────────────────────────────────────────────────┤
+│                    MODELO (Datos)                       │
+│   Modelos + Repositorios                                │
+│           ↕  pg driver                                  │
+│   PostgreSQL                                            │
+└─────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Capas MVC
+
+### Modelo (`src/modelos/` + `src/repositorio/` + `src/dtos/`)
+
+Representa las **tablas**. No contiene lógica de negocio.
+
+| Archivo/Carpeta               | Responsabilidad                                                                                             |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `modelos/*.ts`                | Entidades TypeORM decoradas (`@Entity`, `@Column`, relaciones) que mapean las tablas de la BD               |
+| `repositorio/Repositorio*.ts` | Extienden el repositorio de TypeORM con métodos de consulta (`buscarActivas`, `tieneConflictoFechas`, etc.) |
+| `dtos/`                       | Objetos de transferencia de datos que definen que contiene las peticiones que llegan                        |
+
+### Vista (`src/presentacion/`)
+
+Capa de presentación. Solo renderiza datos y captura eventos del usuario. Se comunica con el backend a través de `apis/`.
+
+| Carpeta                     | Responsabilidad                                                                                 |
+| --------------------------- | ----------------------------------------------------------------------------------------------- |
+| `apis/Api*.ts`              | Tiene las llamadas HTTP a cada endpoint usando `ClienteApp`                                     |
+| `componentes/comunes/`      | Componentes reutilizables: `Boton`, `Alerta`, `Insignia`, `Tarjeta`, `Cargando`, `BarraLateral` |
+| `componentes/huespedes/`    | `BuscarHuesped`, `FormularioHuesped`                                                            |
+| `componentes/reservas/`     | `FormularioReserva`, `ListaReservas`                                                            |
+| `componentes/habitaciones/` | `SelectorHabitacion` (filtra por tipo de habitación)                                            |
+| `componentes/estancias/`    | `FormularioCheckin`, `FormularioCheckout`                                                       |
+| `componentes/servicios/`    | `ListaContactos`                                                                                |
+| `paginas/Pagina*.tsx`       | Junta los componentes para cada sección del sistema                                             |
+| `Aplicacion.tsx`            | Inicio del SPA                                                                                  |
+| `estilos/*.css`             | CSS                                                                                             |
+
+### Controlador (`src/control/` + `src/rutas/` + `src/servicios/`)
+
+Recibe peticiones HTTP, delega a los servicios y retorna respuestas.
+
+| Archivo/Carpeta           | Responsabilidad                                                                                        |
+| ------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `rutas/Ruta*.ts`          | Define los endpoints HTTP y los asocian a métodos del controlador                                      |
+| `control/Controlador*.ts` | Recibe `Request`, invocan el servicio correspondiente y responden usando `RespuestaHttp`               |
+| `servicios/Servicio*.ts`  | Contienen la lógica de negocio: validaciones, orquestación entre repositorios, retornan `Result<T, E>` |
+| `servicios/factory/`      | `FabricaTipoHabitacion`: selecciona la estrategia de habitación por nombre                             |
+| `servicios/estrategy/`    | `EstrategiaHabitacion` (interfaz) + 4 implementaciones concretas                                       |
+| `config/RespuestaHttp.ts` | Convierte un `Result` en respuesta HTTP (200/201/400/404/409)                                          |
+
+---
+
+## Patrones de diseño aplicados
+
+| Patrón         | Ubicación                  | Descripción                                                     |
+| -------------- | -------------------------- | --------------------------------------------------------------- |
+| **Repository** | `src/repositorio/`         | Métodos de consulta nombrados, ocultan TypeORM de los servicios |
+| **Service**    | `src/servicios/`           | Contiene la logica de negocio                                   |
+| **Factory**    | `FabricaTipoHabitacion.ts` | Crea el DTO del tipo de habitación según el nombre              |
+| **Strategy**   | `servicios/estrategy/`     | Cada tipo de habitación encapsula su propia configuración       |
+| **Result**     | Servicios + APIs frontend  | `Ok(val)` / `Err(msg)` elimina try/catch y excepciones          |
 
 ---
 
 ## Tecnologías
 
-| Capa              | Tecnología                       |
-| ----------------- | -------------------------------- |
-| Frontend          | React 18, TypeScript, Vite 5     |
-| Backend           | Express 5, TypeScript            |
-| ORM               | TypeORM 0.3                      |
-| Manejo de errores | ts-results 3.3                   |
-| Base de datos     | PostgreSQL ( con el driver `pg`) |
+| Capa              | Tecnología                   |
+| ----------------- | ---------------------------- |
+| Frontend          | React 18, TypeScript, Vite 5 |
+| Backend           | Express 5, TypeScript        |
+| ORM               | TypeORM 0.3                  |
+| Manejo de errores | ts-results 3.3               |
+| Base de datos     | PostgreSQL (driver `pg`)     |
 
 ---
 
@@ -77,32 +163,16 @@ PostgreSQL
 ```
 Code/
 ├── images/
-│   └── schema.svg
+│   └── diagrama.svg
 ├── src/
 │   ├── config/
 │   │   ├── BaseDatos.ts
+│   │   ├── ClienteApp.ts
 │   │   ├── RespuestaHttp.ts
 │   │   └── ServidorApp.ts
-│   ├── control/
-│   ├── dtos/
-│   │   ├── Estancia/
-│   │   │   ├── RegistrarCheckinDTO.ts
-│   │   │   └── RegistrarCheckoutDTO.ts
-│   │   ├── Huesped/
-│   │   │   ├── ActualizarHuespedDTO.ts
-│   │   │   └── CrearHuespedDTO.ts
-│   │   ├── Reserva/
-│   │   │   ├── CancelarReservaDTO.ts
-│   │   │   └── CrearReservaDTO.ts
-│   │   ├── TiposHabitacion/
-│   │   │   ├── ActualizarTipoHabitacionDTO.ts
-│   │   │   └── CrearTipoHabitacionDTO.ts
-│   │   └── Usuario/
-│   │       ├── AutenticarUsuarioDTO.ts
-│   │       └── CrearUsuarioDTO.ts
+│   │
 │   ├── modelos/
 │   │   ├── Cancelacion.ts
-│   │   ├── Configuracion.ts
 │   │   ├── ContactoServicio.ts
 │   │   ├── Estancia.ts
 │   │   ├── Habitacion.ts
@@ -111,9 +181,16 @@ Code/
 │   │   ├── ReservaHuesped.ts
 │   │   ├── TiposHabitacion.ts
 │   │   └── Usuario.ts
+│   │
+│   ├── dtos/
+│   │   ├── Estancia/
+│   │   ├── Huesped/
+│   │   ├── Reserva/
+│   │   ├── TiposHabitacion/
+│   │   └── Usuario/
+│   │
 │   ├── repositorio/
 │   │   ├── RepositorioCancelacion.ts
-│   │   ├── RepositorioConfiguracion.ts
 │   │   ├── RepositorioContactoServicio.ts
 │   │   ├── RepositorioEstancia.ts
 │   │   ├── RepositorioHabitacion.ts
@@ -122,22 +199,14 @@ Code/
 │   │   ├── RepositorioReservaHuesped.ts
 │   │   ├── RepositorioTipoHabitacion.ts
 │   │   └── RepositorioUsuario.ts
-│   ├── rutas/
-│   │   ├── RutaCancelacion.ts
-│   │   ├── RutaContactoServicio.ts
-│   │   ├── RutaEstancia.ts
-│   │   ├── RutaHabitacion.ts
-│   │   ├── RutaHuesped.ts
-│   │   ├── RutaReserva.ts
-│   │   ├── RutaTipoHabitacion.ts
-│   │   └── RutaUsuario.ts
+│   │
 │   ├── servicios/
 │   │   ├── estrategy/
 │   │   │   ├── EstrategiaHabitacion.ts
-│   │   │   ├── HabitacionDobleIndividual.ts
-│   │   │   ├── HabitacionDobleMatrimonial.ts
 │   │   │   ├── HabitacionSimple.ts
-│   │   │   └── HabitacionSuite.ts
+│   │   │   ├── HabitacionSuite.ts
+│   │   │   ├── HabitacionDobleIndividual.ts
+│   │   │   └── HabitacionDobleMatrimonial.ts
 │   │   ├── factory/
 │   │   │   └── FabricaTipoHabitacion.ts
 │   │   ├── ServicioCancelacion.ts
@@ -149,15 +218,77 @@ Code/
 │   │   ├── ServicioReservaHuesped.ts
 │   │   ├── ServicioTipoHabitacion.ts
 │   │   └── ServicioUsuario.ts
+│   │
+│   ├── control/
+│   │   ├── ControladorCancelacion.ts
+│   │   ├── ControladorContactoServicio.ts
+│   │   ├── ControladorEstancia.ts
+│   │   ├── ControladorHabitacion.ts
+│   │   ├── ControladorHuesped.ts
+│   │   ├── ControladorReserva.ts
+│   │   ├── ControladorReservaHuesped.ts
+│   │   ├── ControladorTipoHabitacion.ts
+│   │   └── ControladorUsuario.ts
+│   │
+│   ├── rutas/
+│   │   ├── RutaCancelacion.ts
+│   │   ├── RutaContactoServicio.ts
+│   │   ├── RutaEstancia.ts
+│   │   ├── RutaHabitacion.ts
+│   │   ├── RutaHuesped.ts
+│   │   ├── RutaReserva.ts
+│   │   ├── RutaTipoHabitacion.ts
+│   │   └── RutaUsuario.ts
+│   │
 │   ├── presentacion/
-│   │   ├── index.css
 │   │   ├── index.html
-│   │   └── index.tsx
+│   │   ├── index.tsx
+│   │   ├── index.css
+│   │   ├── Aplicacion.tsx
+│   │   ├── Aplicacion.css
+│   │   ├── estilos/
+│   │   │   ├── tokens.css
+│   │   │   └── reset.css
+│   │   ├── apis/
+│   │   │   ├── ApiContactoServicio.ts
+│   │   │   ├── ApiEstancia.ts
+│   │   │   ├── ApiHabitacion.ts
+│   │   │   ├── ApiHuesped.ts
+│   │   │   ├── ApiReserva.ts
+│   │   │   ├── ApiTipoHabitacion.ts
+│   │   │   └── ApiUsuario.ts
+│   │   ├── componentes/
+│   │   │   ├── comunes/
+│   │   │   │   ├── Alerta.tsx + Alerta.css
+│   │   │   │   ├── BarraLateral.tsx + BarraLateral.css
+│   │   │   │   ├── Boton.tsx + Boton.css
+│   │   │   │   ├── Cargando.tsx + Cargando.css
+│   │   │   │   ├── Insignia.tsx + Insignia.css
+│   │   │   │   └── Tarjeta.tsx + Tarjeta.css
+│   │   │   ├── estancias/
+│   │   │   │   ├── FormularioCheckin.tsx + FormularioCheckin.css
+│   │   │   │   └── FormularioCheckout.tsx + FormularioCheckout.css
+│   │   │   ├── habitaciones/
+│   │   │   │   └── SelectorHabitacion.tsx
+│   │   │   ├── huespedes/
+│   │   │   │   ├── BuscarHuesped.tsx + BuscarHuesped.css
+│   │   │   │   └── FormularioHuesped.tsx + FormularioHuesped.css
+│   │   │   ├── reservas/
+│   │   │   │   ├── FormularioReserva.tsx + FormularioReserva.css
+│   │   │   │   └── ListaReservas.tsx + ListaReservas.css
+│   │   │   └── servicios/
+│   │   │       └── ListaContactos.tsx + ListaContactos.css
+│   │   └── paginas/
+│   │       ├── PaginaCheckin.tsx
+│   │       ├── PaginaCheckout.tsx
+│   │       ├── PaginaHuespedes.tsx
+│   │       ├── PaginaReservas.tsx
+│   │       └── PaginaServicios.tsx
+│   │
 │   └── main.ts
+│
 ├── package.json
-├── skills-lock.json
 ├── tsconfig.json
-├── tsconfig.node.json
 └── vite.config.ts
 ```
 
@@ -190,18 +321,13 @@ Code/
 
 ### Restricciones CHECK
 
-| Restricción                   | Tabla           | Condición                                                                       |
-| ----------------------------- | --------------- | ------------------------------------------------------------------------------- |
-| `chk_reservas_fechas`         | `reservas`      | `fecha_checkout > fecha_checkin`                                                |
-| `chk_habitaciones_piso`       | `habitaciones`  | `piso >= 0`                                                                     |
-| `chk_huespedes_correo`        | `huespedes`     | `correo LIKE '%@%'`                                                             |
-| `chk_configuracion_tipo_dato` | `configuracion` | `tipo_dato IN ('text','integer','numeric','boolean','time')`                    |
-| `monto_cargo_extra >= 0`      | `estancias`     | `monto_cargo_extra >= 0`                                                        |
-| `ck_checkout_consistente`     | `estancias`     | `timestamp_checkout` y `es_late_checkout` deben ser ambos NULL o ambos NOT NULL |
-
-### Clave primaria especial
-
-La tabla `configuracion` usa una clave primaria de tipo `text` (columna `clave`) en lugar de un ID numérico, para permitir que se acceda directamente por el nombre del parámetro.
+| Restricción               | Tabla          | Condición                                                                       |
+| ------------------------- | -------------- | ------------------------------------------------------------------------------- |
+| `chk_reservas_fechas`     | `reservas`     | `fecha_checkout > fecha_checkin`                                                |
+| `chk_habitaciones_piso`   | `habitaciones` | `piso >= 0`                                                                     |
+| `chk_huespedes_correo`    | `huespedes`    | `correo LIKE '%@%'`                                                             |
+| `monto_cargo_extra >= 0`  | `estancias`    | `monto_cargo_extra >= 0`                                                        |
+| `ck_checkout_consistente` | `estancias`    | `timestamp_checkout` y `es_late_checkout` deben ser ambos NULL o ambos NOT NULL |
 
 ---
 
