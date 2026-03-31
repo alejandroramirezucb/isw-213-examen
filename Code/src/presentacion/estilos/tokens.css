@@ -1,0 +1,14 @@
+:root {
+  --primario:    #1e3a5f;
+  --acento:      #c9943d;
+  --fondo:       #f4f6f9;
+  --superficie:  #ffffff;
+  --texto:       #2c3e50;
+  --texto-suave: #6b7280;
+  --exito:       #16a34a;
+  --error:       #dc2626;
+  --radio:       8px;
+  --sombra:      0 2px 8px rgba(0, 0, 0, 0.08);
+  --lateral:     220px;
+  --fuente:      'Segoe UI', system-ui, sans-serif;
+}
