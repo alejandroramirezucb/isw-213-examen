@@ -17,7 +17,10 @@ type Habitacion = {
   tipo_habitacion?: TipoHabitacion;
 };
 
-type Props = { valor: number | null; onSeleccionar: (id: number) => void };
+type Props = {
+  valor: number | null;
+  onSeleccionar: (id: number, habitacion?: Habitacion) => void
+};
 
 type State = {
   habitaciones: Habitacion[];
@@ -73,15 +76,18 @@ export class SelectorHabitacion extends Component<Props, State> {
             <option
               key={tipo.id}
               value={tipo.id}>
-              {tipo.nombre} — cap. {tipo.capacidad_maxima} — S/.
-              {tipo.precio_referencia}
+              {tipo.nombre}
             </option>
           ))}
         </select>
         <select
           className='formulario-reserva__campo'
           value={valor ?? ''}
-          onChange={(evento) => onSeleccionar(Number(evento.target.value))}
+          onChange={(evento) => {
+            const id = Number(evento.target.value);
+            const hab = filtradas.find(h => h.id === id);
+            onSeleccionar(id, hab);
+          }}
           required>
           <option value=''>Seleccionar habitación</option>
           {filtradas.map((habitacion) => (

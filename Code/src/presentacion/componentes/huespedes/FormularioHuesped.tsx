@@ -20,7 +20,7 @@ type State = {
 
 export class FormularioHuesped extends Component<Props, State> {
   state: State = {
-    tipo_documento: 'DNI',
+    tipo_documento: 'carnet',
     numero_documento: '',
     nombres: '',
     apellidos: '',
@@ -104,9 +104,10 @@ export class FormularioHuesped extends Component<Props, State> {
             onChange={(evento) =>
               this.setState({ tipo_documento: evento.target.value })
             }>
-            <option value='DNI'>DNI</option>
-            <option value='PASAPORTE'>Pasaporte</option>
-            <option value='CE'>Carné de extranjería</option>
+            <option value='carnet'>Carné</option>
+            <option value='pasaporte'>Pasaporte</option>
+            <option value='carnet_extranjero'>Carné de extranjería</option>
+            <option value='nit'>NIT</option>
           </select>
         </div>
         <div className='formulario-huesped__fila'>

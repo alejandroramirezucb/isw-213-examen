@@ -26,7 +26,7 @@ type State = {
 
 export class BuscarHuesped extends Component<Props, State> {
   state: State = {
-    tipo: 'DNI',
+    tipo: 'carnet',
     numero: '',
     huesped: null,
     error: null,
@@ -66,9 +66,10 @@ export class BuscarHuesped extends Component<Props, State> {
             className='buscar-huesped__select'
             value={tipo}
             onChange={(evento) => this.setState({ tipo: evento.target.value })}>
-            <option value='DNI'>DNI</option>
-            <option value='PASAPORTE'>Pasaporte</option>
-            <option value='CE'>Carné de extranjería</option>
+            <option value='carnet'>Carné</option>
+            <option value='pasaporte'>Pasaporte</option>
+            <option value='carnet_extranjero'>Carné de extranjería</option>
+            <option value='nit'>NIT</option>
           </select>
           <input
             className='buscar-huesped__input'

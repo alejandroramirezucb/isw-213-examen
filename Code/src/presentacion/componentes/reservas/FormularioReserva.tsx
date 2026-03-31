@@ -7,11 +7,14 @@ import { BuscarHuesped } from '../huespedes/BuscarHuesped';
 import { SelectorHabitacion } from '../habitaciones/SelectorHabitacion';
 
 type Huesped = { id: number; nombres: string; apellidos: string };
+type TipoHabitacion = { id: number; nombre: string; capacidad_maxima: number; precio_referencia: number };
+type Habitacion = { id: number; numero_habitacion: string; piso: number; estado: string; tipo_habitacion?: TipoHabitacion };
 type Props = { onCreada?: () => void };
 
 type State = {
   titular: Huesped | null;
   idHabitacion: number | null;
+  habitacionSeleccionada: Habitacion | null;
   checkin: string;
   checkout: string;
   personas: number;
@@ -22,9 +25,12 @@ type State = {
 };
 
 export class FormularioReserva extends Component<Props, State> {
+  minDate = new Date().toISOString().split('T')[0];
+
   state: State = {
     titular: null,
     idHabitacion: null,
+    habitacionSeleccionada: null,
     checkin: '',
     checkout: '',
     personas: 1,
@@ -67,10 +73,23 @@ export class FormularioReserva extends Component<Props, State> {
     }
   };
 
+  calcularCostoTotal = () => {
+    const { habitacionSeleccionada, checkin, checkout } = this.state;
+    if (!habitacionSeleccionada?.tipo_habitacion || !checkin || !checkout) return 0;
+
+    const inicio = new Date(checkin);
+    const fin = new Date(checkout);
+    const dias = (fin.getTime() - inicio.getTime()) / (1000 * 60 * 60 * 24);
+    const precio = habitacionSeleccionada.tipo_habitacion.precio_referencia;
+
+    return Math.max(0, dias * precio);
+  };
+
   render() {
     const {
       titular,
       idHabitacion,
+      habitacionSeleccionada,
       checkin,
       checkout,
       personas,
@@ -79,6 +98,7 @@ export class FormularioReserva extends Component<Props, State> {
       exito,
       cargando,
     } = this.state;
+    const costoTotal = this.calcularCostoTotal();
     return (
       <form className='formulario-reserva' onSubmit={this.crear}>
         {error && <Alerta tipo='error' mensaje={error} />}
@@ -96,7 +116,7 @@ export class FormularioReserva extends Component<Props, State> {
           <label className='formulario-reserva__label'>Habitación</label>
           <SelectorHabitacion
             valor={idHabitacion}
-            onSeleccionar={(identificador) => this.setState({ idHabitacion: identificador })}
+            onSeleccionar={(identificador, hab) => this.setState({ idHabitacion: identificador, habitacionSeleccionada: hab || null })}
           />
         </div>
         <div className='formulario-reserva__fila'>
@@ -104,6 +124,7 @@ export class FormularioReserva extends Component<Props, State> {
           <input
             className='formulario-reserva__campo'
             type='date'
+            min={this.minDate}
             value={checkin}
             onChange={(evento) => this.setState({ checkin: evento.target.value })}
             required
@@ -114,6 +135,7 @@ export class FormularioReserva extends Component<Props, State> {
           <input
             className='formulario-reserva__campo'
             type='date'
+            min={this.minDate}
             value={checkout}
             onChange={(evento) => this.setState({ checkout: evento.target.value })}
             required
@@ -139,6 +161,18 @@ export class FormularioReserva extends Component<Props, State> {
             rows={3}
           />
         </div>
+        {costoTotal > 0 && (
+          <div style={{
+            backgroundColor: '#f0f0f0',
+            padding: '1rem',
+            borderRadius: '0.5rem',
+            marginBottom: '1rem',
+            fontWeight: 'bold',
+            fontSize: '1.1rem'
+          }}>
+            Costo total: S/. {costoTotal.toFixed(2)}
+          </div>
+        )}
         <Boton type='submit' disabled={cargando}>
           Crear reserva
         </Boton>
