@@ -8,7 +8,7 @@ export class RespuestaHttp<T = void> {
     if (this.resultado.err) {
       res.status(this.codigoError()).json({ error: this.resultado.val });
     } else {
-      const valor = this.resultado.val === undefined ? { éxito: true } : this.resultado.val;
+      const valor = this.resultado.val === undefined ? { exito: true } : this.resultado.val;
       res.status(codigoExito).json(valor);
     }
   }

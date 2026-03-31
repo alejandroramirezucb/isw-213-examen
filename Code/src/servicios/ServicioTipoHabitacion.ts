@@ -35,7 +35,12 @@ export class ServicioTipoHabitacion {
       return Err('NOMBRE_YA_REGISTRADO');
     }
 
-    const config = FabricaTipoHabitacion.crear(dto.nombre) ?? dto;
+    const config = FabricaTipoHabitacion.crear(dto.nombre);
+
+    if (!config) {
+      return Err('TIPO_HABITACION_NO_ENCONTRADO');
+    }
+  
     const tipo = RepositorioTipoHabitacion.create({
       nombre: config.nombre,
       descripcion: config.descripcion ?? null,

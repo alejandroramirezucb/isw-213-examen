@@ -7,8 +7,8 @@ import { HabitacionDobleMatrimonial } from '../estrategy/HabitacionDobleMatrimon
 
 export class FabricaTipoHabitacion {
   private static readonly estrategias: Record<string, EstrategiaHabitacion> = {
-    Simple: new HabitacionSimple(),
-    Suite: new HabitacionSuite(),
+    'Simple': new HabitacionSimple(),
+    'Suite': new HabitacionSuite(),
     'Doble Individual': new HabitacionDobleIndividual(),
     'Doble Matrimonial': new HabitacionDobleMatrimonial(),
   };
