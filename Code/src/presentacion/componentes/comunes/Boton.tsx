@@ -1,17 +1,17 @@
-import React from 'react';
+import { Component, ReactNode } from 'react';
 import './Boton.css';
 
 type Variante = 'primario' | 'secundario' | 'peligro';
 
 type Props = {
-  children: React.ReactNode;
+  children: ReactNode;
   variante?: Variante;
   type?: 'button' | 'submit';
   onClick?: () => void;
   disabled?: boolean;
 };
 
-export class Boton extends React.Component<Props> {
+export class Boton extends Component<Props> {
   render() {
     const {
       children,

@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import './Aplicacion.css';
 import { BarraLateral } from './componentes/comunes/BarraLateral';
 import { PaginaReservas } from './paginas/PaginaReservas';
@@ -8,10 +8,9 @@ import { PaginaCheckout } from './paginas/PaginaCheckout';
 import { PaginaServicios } from './paginas/PaginaServicios';
 
 type Pagina = 'reservas' | 'huespedes' | 'checkin' | 'checkout' | 'servicios';
-
 type State = { pagina: Pagina };
 
-export class Aplicacion extends React.Component<{}, State> {
+export class Aplicacion extends Component<{}, State> {
   state: State = { pagina: 'reservas' };
 
   navegar = (pagina: Pagina) => {
@@ -21,9 +20,9 @@ export class Aplicacion extends React.Component<{}, State> {
   render() {
     const { pagina } = this.state;
     return (
-      <div className="aplicacion">
+      <div className='aplicacion'>
         <BarraLateral pagina={pagina} onNavegar={this.navegar} />
-        <main className="aplicacion__contenido">
+        <main className='aplicacion__contenido'>
           {pagina === 'reservas'  && <PaginaReservas />}
           {pagina === 'huespedes' && <PaginaHuespedes />}
           {pagina === 'checkin'   && <PaginaCheckin />}

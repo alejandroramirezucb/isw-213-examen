@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import './ListaContactos.css';
 import ApiContactoServicio from '../../apis/ApiContactoServicio';
 import { Cargando } from '../comunes/Cargando';
@@ -6,9 +6,11 @@ import { Alerta } from '../comunes/Alerta';
 
 type ContactoServicio = {
   id: number;
-  nombre: string;
-  encargado: string;
-  telefono: string;
+  nombre_servicio: string;
+  persona_contacto: string | null;
+  telefono: string | null;
+  correo: string | null;
+  descripcion: string | null;
   activo: boolean;
 };
 
@@ -18,11 +20,12 @@ type State = {
   error: string | null;
 };
 
-export class ListaContactos extends React.Component<{}, State> {
+export class ListaContactos extends Component<{}, State> {
   state: State = { contactos: [], cargando: true, error: null };
 
   async componentDidMount() {
     const resultado = await ApiContactoServicio.listarActivos();
+    
     if (resultado.ok) {
       this.setState({ contactos: resultado.val, cargando: false });
     } else {
@@ -32,17 +35,14 @@ export class ListaContactos extends React.Component<{}, State> {
 
   render() {
     const { contactos, cargando, error } = this.state;
+    
     if (cargando) {
       return <Cargando />;
     }
+    
     return (
       <div className='lista-contactos'>
-        {error && (
-          <Alerta
-            tipo='error'
-            mensaje={error}
-          />
-        )}
+        {error && <Alerta tipo='error' mensaje={error} />}
         {contactos.length === 0 && (
           <p className='lista-contactos__vacio'>
             No hay contactos de servicio activos
@@ -58,11 +58,11 @@ export class ListaContactos extends React.Component<{}, State> {
               </tr>
             </thead>
             <tbody>
-              {contactos.map((c) => (
-                <tr key={c.id}>
-                  <td>{c.nombre}</td>
-                  <td>{c.encargado}</td>
-                  <td>{c.telefono}</td>
+              {contactos.map((contacto) => (
+                <tr key={contacto.id}>
+                  <td>{contacto.nombre_servicio}</td>
+                  <td>{contacto.persona_contacto ?? '—'}</td>
+                  <td>{contacto.telefono ?? '—'}</td>
                 </tr>
               ))}
             </tbody>

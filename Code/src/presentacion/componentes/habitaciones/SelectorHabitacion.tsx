@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import ApiHabitacion from '../../apis/ApiHabitacion';
 import ApiTipoHabitacion from '../../apis/ApiTipoHabitacion';
 
@@ -25,19 +25,24 @@ type State = {
   tipoFiltro: number | null;
 };
 
-export class SelectorHabitacion extends React.Component<Props, State> {
+export class SelectorHabitacion extends Component<Props, State> {
   state: State = { habitaciones: [], tipos: [], tipoFiltro: null };
 
   async componentDidMount() {
-    const [habResult, tipoResult] = await Promise.all([
+    const [resultadoHabitaciones, resultadoTipos] = await Promise.all([
       ApiHabitacion.listarDisponibles(),
       ApiTipoHabitacion.listar(),
     ]);
-    if (habResult.ok) {
-      this.setState({ habitaciones: habResult.val });
+
+    if (resultadoHabitaciones.ok) {
+      this.setState({ habitaciones: resultadoHabitaciones.val });
     }
-    if (tipoResult.ok) {
-      this.setState({ tipos: tipoResult.val });
+    if (resultadoTipos.ok) {
+      const tipos = resultadoTipos.val;
+      this.setState({
+        tipos,
+        tipoFiltro: tipos.length > 0 ? Number(tipos[0].id) : null,
+      });
     }
   }
 
@@ -46,40 +51,47 @@ export class SelectorHabitacion extends React.Component<Props, State> {
     const { onSeleccionar, valor } = this.props;
     const filtradas = tipoFiltro
       ? habitaciones.filter(
-          (h) => h.tipo_habitacion && h.tipo_habitacion.id === tipoFiltro,
+          (habitacion) =>
+            habitacion.tipo_habitacion &&
+            Number(habitacion.tipo_habitacion.id) === tipoFiltro,
         )
       : habitaciones;
+
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         <select
           className='formulario-reserva__campo'
           value={tipoFiltro ?? ''}
-          onChange={(e) =>
+          onChange={(evento) =>
             this.setState({
-              tipoFiltro: e.target.value ? Number(e.target.value) : null,
+              tipoFiltro: evento.target.value
+                ? Number(evento.target.value)
+                : null,
             })
           }>
-          <option value=''>Todos los tipos</option>
-          {tipos.map((t) => (
+          {tipos.map((tipo) => (
             <option
-              key={t.id}
-              value={t.id}>
-              {t.nombre} — cap. {t.capacidad_maxima} — S/.{t.precio_referencia}
+              key={tipo.id}
+              value={tipo.id}>
+              {tipo.nombre} — cap. {tipo.capacidad_maxima} — S/.
+              {tipo.precio_referencia}
             </option>
           ))}
         </select>
         <select
           className='formulario-reserva__campo'
           value={valor ?? ''}
-          onChange={(e) => onSeleccionar(Number(e.target.value))}
+          onChange={(evento) => onSeleccionar(Number(evento.target.value))}
           required>
           <option value=''>Seleccionar habitación</option>
-          {filtradas.map((h) => (
+          {filtradas.map((habitacion) => (
             <option
-              key={h.id}
-              value={h.id}>
-              Hab. {h.numero_habitacion} — Piso {h.piso}
-              {h.tipo_habitacion ? ` (${h.tipo_habitacion.nombre})` : ''}
+              key={habitacion.id}
+              value={habitacion.id}>
+              Hab. {habitacion.numero_habitacion} — Piso {habitacion.piso}
+              {habitacion.tipo_habitacion
+                ? ` (${habitacion.tipo_habitacion.nombre})`
+                : ''}
             </option>
           ))}
         </select>

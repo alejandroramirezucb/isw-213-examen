@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import './ListaReservas.css';
 import ApiReserva from '../../apis/ApiReserva';
 import { Cargando } from '../comunes/Cargando';
@@ -23,7 +23,7 @@ type State = {
   mensaje: string | null;
 };
 
-export class ListaReservas extends React.Component<{}, State> {
+export class ListaReservas extends Component<{}, State> {
   state: State = { reservas: [], cargando: true, error: null, mensaje: null };
 
   async componentDidMount() {
@@ -33,6 +33,7 @@ export class ListaReservas extends React.Component<{}, State> {
   cargar = async () => {
     this.setState({ cargando: true, error: null });
     const resultado = await ApiReserva.listarActivas();
+    
     if (resultado.ok) {
       this.setState({ reservas: resultado.val, cargando: false });
     } else {
@@ -40,12 +41,13 @@ export class ListaReservas extends React.Component<{}, State> {
     }
   };
 
-  cancelar = async (id: number) => {
-    const resultado = await ApiReserva.cancelar(id, {
+  cancelar = async (idReserva: number) => {
+    const resultado = await ApiReserva.cancelar(idReserva, {
       motivo: 'Cancelado desde sistema',
     });
+    
     if (resultado.ok) {
-      this.setState({ mensaje: `Reserva #${id} cancelada` });
+      this.setState({ mensaje: `Reserva #${idReserva} cancelada` });
       await this.cargar();
     } else {
       this.setState({ error: resultado.val });
@@ -54,23 +56,15 @@ export class ListaReservas extends React.Component<{}, State> {
 
   render() {
     const { reservas, cargando, error, mensaje } = this.state;
+    
     if (cargando) {
       return <Cargando />;
     }
+    
     return (
       <div className='lista-reservas'>
-        {error && (
-          <Alerta
-            tipo='error'
-            mensaje={error}
-          />
-        )}
-        {mensaje && (
-          <Alerta
-            tipo='exito'
-            mensaje={mensaje}
-          />
-        )}
+        {error && <Alerta tipo='error' mensaje={error} />}
+        {mensaje && <Alerta tipo='exito' mensaje={mensaje} />}
         {reservas.length === 0 && (
           <p className='lista-reservas__vacio'>No hay reservas activas</p>
         )}
@@ -88,27 +82,27 @@ export class ListaReservas extends React.Component<{}, State> {
               </tr>
             </thead>
             <tbody>
-              {reservas.map((r) => (
-                <tr key={r.id}>
-                  <td>#{r.id}</td>
+              {reservas.map((reserva) => (
+                <tr key={reserva.id}>
+                  <td>#{reserva.id}</td>
                   <td>
-                    {r.habitacion
-                      ? `Hab. ${r.habitacion.numero_habitacion}`
+                    {reserva.habitacion
+                      ? `Hab. ${reserva.habitacion.numero_habitacion}`
                       : '—'}
                   </td>
-                  <td>{r.fecha_checkin}</td>
-                  <td>{r.fecha_checkout}</td>
-                  <td>{r.cantidad_personas}</td>
+                  <td>{reserva.fecha_checkin}</td>
+                  <td>{reserva.fecha_checkout}</td>
+                  <td>{reserva.cantidad_personas}</td>
                   <td>
                     <Insignia
-                      texto={r.estado}
-                      variante={r.estado.toLowerCase()}
+                      texto={reserva.estado}
+                      variante={reserva.estado.toLowerCase()}
                     />
                   </td>
                   <td>
                     <Boton
                       variante='peligro'
-                      onClick={() => this.cancelar(r.id)}>
+                      onClick={() => this.cancelar(reserva.id)}>
                       Cancelar
                     </Boton>
                   </td>

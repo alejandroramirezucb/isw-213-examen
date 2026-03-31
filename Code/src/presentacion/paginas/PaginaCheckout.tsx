@@ -1,8 +1,8 @@
-import React from 'react';
+import { Component } from 'react';
 import { Tarjeta } from '../componentes/comunes/Tarjeta';
 import { FormularioCheckout } from '../componentes/estancias/FormularioCheckout';
 
-export class PaginaCheckout extends React.Component {
+export class PaginaCheckout extends Component {
   render() {
     return (
       <div>

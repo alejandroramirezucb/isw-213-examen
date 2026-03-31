@@ -28,7 +28,7 @@ export class Habitacion {
   @Column({ type: 'text', unique: true })
   numero_habitacion!: string;
 
-  @Column()
+  @Column({ type: 'integer' })
   piso!: number;
 
   @Column({

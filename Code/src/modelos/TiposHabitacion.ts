@@ -22,7 +22,7 @@ export class TiposHabitacion {
   @Column({ type: 'text', nullable: true })
   descripcion!: string | null;
 
-  @Column()
+  @Column({ type: 'integer' })
   capacidad_maxima!: number;
 
   @Column({ type: 'numeric', precision: 10, scale: 2 })

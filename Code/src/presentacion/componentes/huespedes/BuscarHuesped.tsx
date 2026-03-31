@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import './BuscarHuesped.css';
 import ApiHuesped from '../../apis/ApiHuesped';
 import { Boton } from '../comunes/Boton';
@@ -14,7 +14,7 @@ type Huesped = {
   telefono: string | null;
 };
 
-type Props = { onSeleccionar?: (h: Huesped) => void; label?: string };
+type Props = { onSeleccionar?: (huesped: Huesped) => void; label?: string };
 
 type State = {
   tipo: string;
@@ -24,7 +24,7 @@ type State = {
   cargando: boolean;
 };
 
-export class BuscarHuesped extends React.Component<Props, State> {
+export class BuscarHuesped extends Component<Props, State> {
   state: State = {
     tipo: 'DNI',
     numero: '',
@@ -35,13 +35,17 @@ export class BuscarHuesped extends React.Component<Props, State> {
 
   buscar = async () => {
     const { tipo, numero } = this.state;
+
     if (!numero) {
       return;
     }
+
     this.setState({ cargando: true, error: null, huesped: null });
     const resultado = await ApiHuesped.buscarPorDocumento(tipo, numero);
+
     if (resultado.ok) {
       this.setState({ huesped: resultado.val, cargando: false });
+
       if (this.props.onSeleccionar) {
         this.props.onSeleccionar(resultado.val);
       }
@@ -53,6 +57,7 @@ export class BuscarHuesped extends React.Component<Props, State> {
   render() {
     const { tipo, numero, huesped, error, cargando } = this.state;
     const { label = 'Buscar huésped' } = this.props;
+
     return (
       <div className='buscar-huesped'>
         <p className='buscar-huesped__etiqueta'>{label}</p>
@@ -60,7 +65,7 @@ export class BuscarHuesped extends React.Component<Props, State> {
           <select
             className='buscar-huesped__select'
             value={tipo}
-            onChange={(e) => this.setState({ tipo: e.target.value })}>
+            onChange={(evento) => this.setState({ tipo: evento.target.value })}>
             <option value='DNI'>DNI</option>
             <option value='PASAPORTE'>Pasaporte</option>
             <option value='CE'>Carné de extranjería</option>
@@ -69,7 +74,9 @@ export class BuscarHuesped extends React.Component<Props, State> {
             className='buscar-huesped__input'
             placeholder='Número de documento'
             value={numero}
-            onChange={(e) => this.setState({ numero: e.target.value })}
+            onChange={(evento) =>
+              this.setState({ numero: evento.target.value })
+            }
           />
           <Boton
             onClick={this.buscar}

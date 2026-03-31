@@ -1,18 +1,18 @@
-import React from 'react';
+import { Component } from 'react';
 import './BarraLateral.css';
 
 type Pagina = 'reservas' | 'huespedes' | 'checkin' | 'checkout' | 'servicios';
 type Props = { pagina: Pagina; onNavegar: (p: Pagina) => void };
 
 const ITEMS: { pagina: Pagina; etiqueta: string }[] = [
-  { pagina: 'reservas', etiqueta: 'Reservas' },
+  { pagina: 'reservas',  etiqueta: 'Reservas' },
   { pagina: 'huespedes', etiqueta: 'Huéspedes' },
-  { pagina: 'checkin', etiqueta: 'Check-in' },
-  { pagina: 'checkout', etiqueta: 'Check-out' },
+  { pagina: 'checkin',   etiqueta: 'Check-in' },
+  { pagina: 'checkout',  etiqueta: 'Check-out' },
   { pagina: 'servicios', etiqueta: 'Servicios' },
 ];
 
-export class BarraLateral extends React.Component<Props> {
+export class BarraLateral extends Component<Props> {
   render() {
     const { pagina, onNavegar } = this.props;
     return (

@@ -14,12 +14,14 @@ export class RespuestaHttp<T = void> {
 
   private codigoError(): number {
     const error = this.resultado.val as string;
+    
     if (error.includes('NO_ENCONTR')) {
       return 404;
     }
     if (error.includes('YA_')) {
       return 409;
     }
+
     return 400;
   }
 }

@@ -1,8 +1,8 @@
-import React from 'react';
+import { Component } from 'react';
 import { Tarjeta } from '../componentes/comunes/Tarjeta';
 import { ListaContactos } from '../componentes/servicios/ListaContactos';
 
-export class PaginaServicios extends React.Component {
+export class PaginaServicios extends Component {
   render() {
     return (
       <div>

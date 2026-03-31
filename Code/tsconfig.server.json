@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "include": [
+    "src/main.ts",
+    "src/config/**/*.ts",
+    "src/dtos/**/*.ts",
+    "src/modelos/**/*.ts",
+    "src/repositorio/**/*.ts",
+    "src/servicios/**/*.ts",
+    "src/control/**/*.ts",
+    "src/rutas/**/*.ts"
+  ],
+  "exclude": ["src/presentacion/**/*"]
+}

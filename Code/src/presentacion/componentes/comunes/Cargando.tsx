@@ -1,7 +1,7 @@
-import React from 'react';
+import { Component } from 'react';
 import './Cargando.css';
 
-export class Cargando extends React.Component {
+export class Cargando extends Component {
   render() {
     return (
       <div className='cargando'>

@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component, SyntheticEvent } from 'react';
 import './FormularioReserva.css';
 import ApiReserva from '../../apis/ApiReserva';
 import { Boton } from '../comunes/Boton';
@@ -21,7 +21,7 @@ type State = {
   cargando: boolean;
 };
 
-export class FormularioReserva extends React.Component<Props, State> {
+export class FormularioReserva extends Component<Props, State> {
   state: State = {
     titular: null,
     idHabitacion: null,
@@ -34,14 +34,15 @@ export class FormularioReserva extends React.Component<Props, State> {
     cargando: false,
   };
 
-  crear = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const { titular, idHabitacion, checkin, checkout, personas, notas } =
-      this.state;
+  crear = async (evento: SyntheticEvent) => {
+    evento.preventDefault();
+    const { titular, idHabitacion, checkin, checkout, personas, notas } = this.state;
+    
     if (!titular || !idHabitacion) {
       this.setState({ error: 'Selecciona huésped titular y habitación' });
       return;
     }
+    
     this.setState({ cargando: true, error: null, exito: null });
     const resultado = await ApiReserva.crear({
       id_huesped_titular: titular.id,
@@ -51,11 +52,13 @@ export class FormularioReserva extends React.Component<Props, State> {
       cantidad_personas: personas,
       notas: notas || undefined,
     });
+    
     if (resultado.ok) {
       this.setState({
         exito: `Reserva #${resultado.val.id} creada exitosamente`,
         cargando: false,
       });
+      
       if (this.props.onCreada) {
         this.props.onCreada();
       }
@@ -77,24 +80,12 @@ export class FormularioReserva extends React.Component<Props, State> {
       cargando,
     } = this.state;
     return (
-      <form
-        className='formulario-reserva'
-        onSubmit={this.crear}>
-        {error && (
-          <Alerta
-            tipo='error'
-            mensaje={error}
-          />
-        )}
-        {exito && (
-          <Alerta
-            tipo='exito'
-            mensaje={exito}
-          />
-        )}
+      <form className='formulario-reserva' onSubmit={this.crear}>
+        {error && <Alerta tipo='error' mensaje={error} />}
+        {exito && <Alerta tipo='exito' mensaje={exito} />}
         <BuscarHuesped
           label='Huésped titular'
-          onSeleccionar={(h) => this.setState({ titular: h })}
+          onSeleccionar={(huesped) => this.setState({ titular: huesped })}
         />
         {titular && (
           <p className='formulario-reserva__titular'>
@@ -105,7 +96,7 @@ export class FormularioReserva extends React.Component<Props, State> {
           <label className='formulario-reserva__label'>Habitación</label>
           <SelectorHabitacion
             valor={idHabitacion}
-            onSeleccionar={(id) => this.setState({ idHabitacion: id })}
+            onSeleccionar={(identificador) => this.setState({ idHabitacion: identificador })}
           />
         </div>
         <div className='formulario-reserva__fila'>
@@ -114,7 +105,7 @@ export class FormularioReserva extends React.Component<Props, State> {
             className='formulario-reserva__campo'
             type='date'
             value={checkin}
-            onChange={(e) => this.setState({ checkin: e.target.value })}
+            onChange={(evento) => this.setState({ checkin: evento.target.value })}
             required
           />
         </div>
@@ -124,22 +115,18 @@ export class FormularioReserva extends React.Component<Props, State> {
             className='formulario-reserva__campo'
             type='date'
             value={checkout}
-            onChange={(e) => this.setState({ checkout: e.target.value })}
+            onChange={(evento) => this.setState({ checkout: evento.target.value })}
             required
           />
         </div>
         <div className='formulario-reserva__fila'>
-          <label className='formulario-reserva__label'>
-            Cantidad de personas
-          </label>
+          <label className='formulario-reserva__label'>Cantidad de personas</label>
           <input
             className='formulario-reserva__campo'
             type='number'
             min={1}
             value={personas}
-            onChange={(e) =>
-              this.setState({ personas: Number(e.target.value) })
-            }
+            onChange={(evento) => this.setState({ personas: Number(evento.target.value) })}
             required
           />
         </div>
@@ -148,13 +135,11 @@ export class FormularioReserva extends React.Component<Props, State> {
           <textarea
             className='formulario-reserva__campo'
             value={notas}
-            onChange={(e) => this.setState({ notas: e.target.value })}
+            onChange={(evento) => this.setState({ notas: evento.target.value })}
             rows={3}
           />
         </div>
-        <Boton
-          type='submit'
-          disabled={cargando}>
+        <Boton type='submit' disabled={cargando}>
           Crear reserva
         </Boton>
       </form>

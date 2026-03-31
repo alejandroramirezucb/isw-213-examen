@@ -14,11 +14,11 @@ export class ServicioReservaHuesped {
     idReserva: number,
   ): Promise<Result<ReservaHuesped[], ErrorReservaHuesped>> {
     const reserva = await RepositorioReserva.findOneBy({ id: idReserva });
-    
+
     if (!reserva) {
       return Err('RESERVA_NO_ENCONTRADA');
     }
-    
+
     return Ok(await RepositorioReservaHuesped.buscarPorReserva(idReserva));
   }
 
@@ -27,7 +27,7 @@ export class ServicioReservaHuesped {
     idHuesped: number,
   ): Promise<Result<ReservaHuesped, ErrorReservaHuesped>> {
     const reserva = await RepositorioReserva.findOneBy({ id: idReserva });
-    
+
     if (!reserva) {
       return Err('RESERVA_NO_ENCONTRADA');
     }
@@ -36,7 +36,7 @@ export class ServicioReservaHuesped {
       idReserva,
       idHuesped,
     );
-    
+
     if (existe) {
       return Err('HUESPED_YA_EN_RESERVA');
     }
@@ -70,7 +70,7 @@ export class ServicioReservaHuesped {
       id_reserva: idReserva,
       id_huesped: idHuesped,
     });
-    
+
     return Ok(undefined);
   }
 
@@ -79,7 +79,7 @@ export class ServicioReservaHuesped {
     idHuespedNuevo: number,
   ): Promise<Result<void, ErrorReservaHuesped>> {
     const reserva = await RepositorioReserva.findOneBy({ id: idReserva });
-    
+
     if (!reserva) {
       return Err('RESERVA_NO_ENCONTRADA');
     }
@@ -88,14 +88,14 @@ export class ServicioReservaHuesped {
       idReserva,
       idHuespedNuevo,
     );
-    
+
     if (!nuevo) {
       return Err('HUESPED_NO_EN_RESERVA');
     }
 
     await RepositorioReservaHuesped.limpiarTitular(idReserva);
     await RepositorioReservaHuesped.asignarTitular(idReserva, idHuespedNuevo);
-   
+
     return Ok(undefined);
   }
 }

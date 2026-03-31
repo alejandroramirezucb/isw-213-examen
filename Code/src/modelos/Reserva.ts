@@ -38,7 +38,7 @@ export class Reserva {
   @Column({ type: 'date' })
   fecha_checkout!: string;
 
-  @Column()
+  @Column({ type: 'integer' })
   cantidad_personas!: number;
 
   @Column({

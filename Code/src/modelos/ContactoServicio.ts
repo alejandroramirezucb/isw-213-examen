@@ -11,27 +11,27 @@ export class ContactoServicio {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id!: number;
 
-  @Column({ unique: true })
+  @Column({ type: 'text', unique: true })
   nombre_servicio!: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   persona_contacto!: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   telefono!: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   correo!: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   descripcion!: string;
 
-  @Column({ default: true })
+  @Column({ type: 'boolean', default: true })
   activo!: boolean;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   creado_en!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   actualizado_en!: Date;
 }

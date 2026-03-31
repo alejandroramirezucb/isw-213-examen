@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component, FormEvent } from 'react';
 import './FormularioHuesped.css';
 import ApiHuesped from '../../apis/ApiHuesped';
 import { Boton } from '../comunes/Boton';
@@ -18,7 +18,7 @@ type State = {
   cargando: boolean;
 };
 
-export class FormularioHuesped extends React.Component<Props, State> {
+export class FormularioHuesped extends Component<Props, State> {
   state: State = {
     tipo_documento: 'DNI',
     numero_documento: '',
@@ -31,8 +31,9 @@ export class FormularioHuesped extends React.Component<Props, State> {
     cargando: false,
   };
 
-  guardar = async (e: React.FormEvent) => {
-    e.preventDefault();
+  guardar = async (evento: FormEvent) => {
+    evento.preventDefault();
+
     const {
       tipo_documento,
       numero_documento,
@@ -41,7 +42,9 @@ export class FormularioHuesped extends React.Component<Props, State> {
       correo,
       telefono,
     } = this.state;
+
     this.setState({ cargando: true, error: null, exito: null });
+
     const resultado = await ApiHuesped.registrar({
       tipo_documento,
       numero_documento,
@@ -50,11 +53,13 @@ export class FormularioHuesped extends React.Component<Props, State> {
       correo,
       telefono: telefono || undefined,
     });
+
     if (resultado.ok) {
       this.setState({
         exito: 'Huésped registrado correctamente',
         cargando: false,
       });
+
       if (this.props.onGuardado) {
         this.props.onGuardado();
       }
@@ -96,7 +101,9 @@ export class FormularioHuesped extends React.Component<Props, State> {
           <select
             className='formulario-huesped__campo'
             value={tipo_documento}
-            onChange={(e) => this.setState({ tipo_documento: e.target.value })}>
+            onChange={(evento) =>
+              this.setState({ tipo_documento: evento.target.value })
+            }>
             <option value='DNI'>DNI</option>
             <option value='PASAPORTE'>Pasaporte</option>
             <option value='CE'>Carné de extranjería</option>
@@ -109,8 +116,8 @@ export class FormularioHuesped extends React.Component<Props, State> {
           <input
             className='formulario-huesped__campo'
             value={numero_documento}
-            onChange={(e) =>
-              this.setState({ numero_documento: e.target.value })
+            onChange={(evento) =>
+              this.setState({ numero_documento: evento.target.value })
             }
             required
           />
@@ -120,7 +127,9 @@ export class FormularioHuesped extends React.Component<Props, State> {
           <input
             className='formulario-huesped__campo'
             value={nombres}
-            onChange={(e) => this.setState({ nombres: e.target.value })}
+            onChange={(evento) =>
+              this.setState({ nombres: evento.target.value })
+            }
             required
           />
         </div>
@@ -129,7 +138,9 @@ export class FormularioHuesped extends React.Component<Props, State> {
           <input
             className='formulario-huesped__campo'
             value={apellidos}
-            onChange={(e) => this.setState({ apellidos: e.target.value })}
+            onChange={(evento) =>
+              this.setState({ apellidos: evento.target.value })
+            }
             required
           />
         </div>
@@ -139,7 +150,9 @@ export class FormularioHuesped extends React.Component<Props, State> {
             className='formulario-huesped__campo'
             type='email'
             value={correo}
-            onChange={(e) => this.setState({ correo: e.target.value })}
+            onChange={(evento) =>
+              this.setState({ correo: evento.target.value })
+            }
             required
           />
         </div>
@@ -148,7 +161,9 @@ export class FormularioHuesped extends React.Component<Props, State> {
           <input
             className='formulario-huesped__campo'
             value={telefono}
-            onChange={(e) => this.setState({ telefono: e.target.value })}
+            onChange={(evento) =>
+              this.setState({ telefono: evento.target.value })
+            }
           />
         </div>
         <Boton

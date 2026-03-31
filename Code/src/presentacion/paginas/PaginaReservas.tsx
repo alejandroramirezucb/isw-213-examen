@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import { Tarjeta } from '../componentes/comunes/Tarjeta';
 import { ListaReservas } from '../componentes/reservas/ListaReservas';
 import { FormularioReserva } from '../componentes/reservas/FormularioReserva';
@@ -6,7 +6,7 @@ import { FormularioReserva } from '../componentes/reservas/FormularioReserva';
 type Vista = 'listar' | 'crear';
 type State = { vista: Vista };
 
-export class PaginaReservas extends React.Component<{}, State> {
+export class PaginaReservas extends Component<{}, State> {
   state: State = { vista: 'listar' };
 
   render() {

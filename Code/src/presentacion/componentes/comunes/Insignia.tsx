@@ -1,9 +1,9 @@
-import React from 'react';
+import { Component } from 'react';
 import './Insignia.css';
 
 type Props = { texto: string; variante: string };
 
-export class Insignia extends React.Component<Props> {
+export class Insignia extends Component<Props> {
   render() {
     const { texto, variante } = this.props;
     return (

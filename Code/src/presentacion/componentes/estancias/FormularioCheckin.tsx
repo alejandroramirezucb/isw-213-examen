@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component, SyntheticEvent } from 'react';
 import './FormularioCheckin.css';
 import ApiReserva from '../../apis/ApiReserva';
 import ApiEstancia from '../../apis/ApiEstancia';
@@ -23,7 +23,7 @@ type State = {
   cargando: boolean;
 };
 
-export class FormularioCheckin extends React.Component<{}, State> {
+export class FormularioCheckin extends Component<{}, State> {
   state: State = {
     reservas: [],
     idReserva: null,
@@ -43,17 +43,20 @@ export class FormularioCheckin extends React.Component<{}, State> {
     }
   }
 
-  registrar = async (e: React.FormEvent) => {
-    e.preventDefault();
+  registrar = async (evento: SyntheticEvent) => {
+    evento.preventDefault();
     const { idReserva, observaciones, registrado_por } = this.state;
+
     if (!idReserva) {
       return;
     }
+
     this.setState({ cargando: true, error: null, exito: null });
     const resultado = await ApiEstancia.registrarCheckin(idReserva, {
       observaciones: observaciones || undefined,
       registrado_por: registrado_por || undefined,
     });
+
     if (resultado.ok) {
       this.setState({
         exito: 'Check-in registrado exitosamente',
@@ -78,6 +81,7 @@ export class FormularioCheckin extends React.Component<{}, State> {
     if (cargando && reservas.length === 0) {
       return <Cargando />;
     }
+
     return (
       <form
         className='formulario-checkin'
@@ -99,18 +103,20 @@ export class FormularioCheckin extends React.Component<{}, State> {
           <select
             className='formulario-checkin__campo'
             value={idReserva ?? ''}
-            onChange={(e) =>
-              this.setState({ idReserva: Number(e.target.value) })
+            onChange={(evento) =>
+              this.setState({ idReserva: Number(evento.target.value) })
             }
             required>
             <option value=''>Seleccionar reserva</option>
-            {reservas.map((r) => (
+            {reservas.map((reserva) => (
               <option
-                key={r.id}
-                value={r.id}>
-                #{r.id} —{' '}
-                {r.habitacion ? `Hab. ${r.habitacion.numero_habitacion}` : ''} —{' '}
-                {r.fecha_checkin}
+                key={reserva.id}
+                value={reserva.id}>
+                #{reserva.id} —{' '}
+                {reserva.habitacion
+                  ? `Hab. ${reserva.habitacion.numero_habitacion}`
+                  : ''}{' '}
+                — {reserva.fecha_checkin}
               </option>
             ))}
           </select>
@@ -120,7 +126,9 @@ export class FormularioCheckin extends React.Component<{}, State> {
           <input
             className='formulario-checkin__campo'
             value={registrado_por}
-            onChange={(e) => this.setState({ registrado_por: e.target.value })}
+            onChange={(evento) =>
+              this.setState({ registrado_por: evento.target.value })
+            }
           />
         </div>
         <div className='formulario-checkin__fila'>
@@ -128,7 +136,9 @@ export class FormularioCheckin extends React.Component<{}, State> {
           <textarea
             className='formulario-checkin__campo'
             value={observaciones}
-            onChange={(e) => this.setState({ observaciones: e.target.value })}
+            onChange={(evento) =>
+              this.setState({ observaciones: evento.target.value })
+            }
             rows={3}
           />
         </div>

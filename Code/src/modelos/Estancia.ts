@@ -37,7 +37,7 @@ export class Estancia {
   @Column({ type: 'timestamptz', nullable: true })
   timestamp_checkout!: Date | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'boolean', nullable: true })
   es_late_checkout!: boolean | null;
 
   @Column({

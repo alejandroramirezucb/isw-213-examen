@@ -14,7 +14,7 @@ export class ReservaHuesped {
   @PrimaryColumn({ type: 'bigint' })
   id_huesped!: number;
 
-  @Column({ default: false })
+  @Column({ type: 'boolean', default: false })
   es_titular!: boolean;
 
   @ManyToOne(() => Reserva, (reserva) => reserva.reserva_huespedes, {

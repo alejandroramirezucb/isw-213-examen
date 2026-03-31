@@ -3,9 +3,11 @@ import { ClienteApp } from '../../config/ClienteApp';
 
 type ContactoServicio = {
   id: number;
-  nombre: string;
-  encargado: string;
-  telefono: string;
+  nombre_servicio: string;
+  persona_contacto: string | null;
+  telefono: string | null;
+  correo: string | null;
+  descripcion: string | null;
   activo: boolean;
 };
 

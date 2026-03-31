@@ -1,9 +1,9 @@
-import React from 'react';
+import { Component, ReactNode } from 'react';
 import './Tarjeta.css';
 
-type Props = { titulo?: string; children: React.ReactNode };
+type Props = { titulo?: string; children: ReactNode };
 
-export class Tarjeta extends React.Component<Props> {
+export class Tarjeta extends Component<Props> {
   render() {
     const { titulo, children } = this.props;
     return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import { Tarjeta } from '../componentes/comunes/Tarjeta';
 import { BuscarHuesped } from '../componentes/huespedes/BuscarHuesped';
 import { FormularioHuesped } from '../componentes/huespedes/FormularioHuesped';
@@ -6,7 +6,7 @@ import { FormularioHuesped } from '../componentes/huespedes/FormularioHuesped';
 type Vista = 'buscar' | 'registrar';
 type State = { vista: Vista };
 
-export class PaginaHuespedes extends React.Component<{}, State> {
+export class PaginaHuespedes extends Component<{}, State> {
   state: State = { vista: 'buscar' };
 
   render() {
