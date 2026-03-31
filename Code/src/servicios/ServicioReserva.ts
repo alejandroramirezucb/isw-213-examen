@@ -37,13 +37,13 @@ export class ServicioReserva {
       return Err('HABITACION_NO_DISPONIBLE');
     }
 
-    const nuevaReserva = RepositorioReserva.create({
-      habitacion: { id: dto.id_habitacion },
-      fecha_checkin: dto.fecha_checkin,
-      fecha_checkout: dto.fecha_checkout,
-      cantidad_personas: dto.cantidad_personas,
-      notas: dto.notas ?? null,
-    });
+    const nuevaReserva = new Reserva();
+    nuevaReserva.habitacion = { id: dto.id_habitacion } as any;
+    nuevaReserva.fecha_checkin = dto.fecha_checkin;
+    nuevaReserva.fecha_checkout = dto.fecha_checkout;
+    nuevaReserva.cantidad_personas = dto.cantidad_personas;
+    nuevaReserva.estado = EstadoReserva.PENDIENTE;
+    nuevaReserva.notas = dto.notas ?? null;
 
     const reserva = await RepositorioReserva.save(nuevaReserva);
 
@@ -63,7 +63,7 @@ export class ServicioReserva {
     dto: CancelarReservaDTO,
   ): Promise<Result<void, ErrorReserva>> {
     const reserva = await RepositorioReserva.findOneBy({ id });
-    
+
     if (!reserva) {
       return Err('RESERVA_NO_ENCONTRADA');
     }
@@ -76,30 +76,30 @@ export class ServicioReserva {
       motivo: dto.motivo ?? null,
       registrado_por: dto.registrado_por ?? null,
     });
-    
+
     await RepositorioCancelacion.save(cancelacion);
     await RepositorioReserva.update(id, { estado: EstadoReserva.CANCELADA });
-    
+
     return Ok(undefined);
   }
 
   async buscarPorId(id: number): Promise<Result<Reserva, ErrorReserva>> {
     const reserva = await RepositorioReserva.buscarConHabitacion(id);
-    
+
     if (!reserva) {
       return Err('RESERVA_NO_ENCONTRADA');
     }
-    
+
     return Ok(reserva);
   }
 
   async buscarConHuespedes(id: number): Promise<Result<Reserva, ErrorReserva>> {
     const reserva = await RepositorioReserva.buscarConHuespedes(id);
-    
+
     if (!reserva) {
       return Err('RESERVA_NO_ENCONTRADA');
     }
-    
+
     return Ok(reserva);
   }
 

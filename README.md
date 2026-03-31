@@ -8,40 +8,78 @@
 
 ## Instrucciones de ejecución
 
-**Requisitos** Node.js 18+ y PostgreSQL
+### Requisitos previos
 
-1. Instalar dependencias:
+- **Node.js**: Versión 18 o superior
+- **PostgreSQL**: Versión 12 o superior (con el usuario `postgres` disponible)
+- **npm**: Incluido con Node.js
+
+### Pasos de instalación
+
+1. **Clonar o descargar el proyecto** y navegar a la carpeta:
 
    ```bash
    cd Code
+   ```
+
+2. **Instalar dependencias de npm**:
+
+   ```bash
    npm install
    ```
 
-2. Crear la base de datos y cargar el schema:
+3. **Crear la base de datos y cargar el schema**:
+
+   Primero, crea una nueva base de datos PostgreSQL:
 
    ```bash
    createdb -U postgres hotel_db
+   ```
+
+   Luego, carga el schema desde el archivo SQL:
+
+   ```bash
    psql -U postgres -d hotel_db -f database/dump_local.sql
    ```
 
-3. Configurar variables de entorno (crear archivo `.env` en `Code/`):
+4. **Configurar variables de entorno**:
 
-   ```
+   Crea un archivo `.env` en la carpeta `Code/` con el siguiente contenido:
+
+   ```env
    DB_HOST=localhost
    DB_PORT=5432
    DB_USERNAME=postgres
-   DB_PASSWORD=<contraseña>
+   DB_PASSWORD=<tu_contraseña_de_postgres>
    DB_NAME=hotel_db
    ```
 
-4. Ejecutar en modo desarrollo (backend + frontend al mismo tiempo):
+   Reemplaza `<tu_contraseña_de_postgres>` con la contraseña de tu usuario `postgres` en PostgreSQL.
+
+5. **Ejecutar el sistema en modo desarrollo**:
 
    ```bash
    npm run dev
    ```
 
-   - Backend: `http://localhost:5000`
-   - Frontend: `http://localhost:3000`
+   Este comando inicia tanto el backend como el frontend:
+   - **Backend**: Disponible en `http://localhost:5000`
+   - **Frontend**: Disponible en `http://localhost:3000`
+
+### Verificación de funcionamiento
+
+Una vez ejecutado `npm run dev`, verifica que todo está funcionando:
+
+1. Abre tu navegador web en `http://localhost:3000`
+2. Deberías ver la interfaz de Raidenhotel con la barra lateral de navegación
+3. Intenta navegar a la sección "Huéspedes" para registrar un nuevo huésped
+4. Verifica que los datos se guardan sin errores
+
+Si ves errores de conexión a la base de datos, revisa que:
+
+- PostgreSQL está corriendo
+- Los datos en `.env` son correctos (especialmente la contraseña)
+- La base de datos `hotel_db` existe y tiene las tablas cargadas
 
 ---
 
@@ -56,6 +94,50 @@
 | HU-05 | Seleccionar tipo de habitación       | Reservas (selector)      |
 | HU-06 | Visualizar contactos de servicio     | Servicios                |
 | HU-08 | Registrar check-out (late check-out) | Check-out                |
+
+**Nota**: Este prototipo implementa las historias de usuario obligatorias (HU-01 a HU-06) más la historia individual asignada (HU-08: Registrar check-out con late check-out). Las historias HU-07, HU-09 y HU-10 no están incluidas en este alcance.
+
+---
+
+## Guía Rápida de Uso
+
+### Flujos
+
+1. **Registrar un huésped** (HU-01)
+   - Navega a "Huéspedes" en la barra lateral
+   - Haz clic en "Registrar nuevo huésped"
+   - Completa: tipo de documento, número, nombres, apellidos, correo y teléfono
+   - El sistema valida que el documento no esté duplicado
+
+2. **Crear una reserva** (HU-02, HU-05)
+   - Ve a "Reservas" → "Nueva reserva"
+   - Selecciona un huésped titular
+   - Elige tipo de habitación (Simple, Suite, Doble Individual o Doble Matrimonial)
+   - Selecciona una habitación específica disponible
+   - Define fechas de check-in y check-out
+   - Especifica cantidad de personas (el sistema valida capacidad)
+   - El sistema previene conflictos de fechas automáticamente
+
+3. **Consultar reservas** (HU-03)
+   - Ve a "Reservas" → "Lista"
+   - Verás todas las reservas activas y futuras ordenadas por fecha
+   - Puedes ver detalles de cada reserva
+
+4. **Registrar check-in** (HU-04)
+   - Ve a "Check-in"
+   - Busca y selecciona la reserva del huésped
+   - Registra quién realizó el check-in y observaciones
+   - El sistema cambia el estado de la reserva a "activa"
+
+5. **Visualizar servicios** (HU-06)
+   - Ve a "Servicios"
+   - Consulta contactos disponibles (nombre, encargado, teléfono)
+
+6. **Registrar check-out** (HU-08)
+   - Ve a "Check-out"
+   - Busca y selecciona la reserva con check-in registrado
+   - Se registra el cargo extra si aplica
+   - El estado de la reserva cambia a "completada"
 
 ---
 
@@ -316,7 +398,7 @@ Code/
 
 ### Modelo entidad-relación
 
-![Modelo de base de datos](Code/images/schema.svg)
+![Modelo de base de datos](Code/images/schema.png)
 
 ### Enumeraciones
 
@@ -514,3 +596,44 @@ Como recepcionista quiero registrar el check-out de una reserva en curso para ce
 **AC-3:** Dado que la salida ocurre después del horario límite, entonces el sistema debe calcular y registrar el cargo por late check-out.
 
 > `ServicioEstancia.registrarCheckout()` obtiene la hora límite con `RepositorioConfiguracion.obtenerTexto('late_checkout_hora_limite', '12:00')`, evalúa `esSalidaTardia()` comparando la hora actual con el límite, y si aplica calcula `monto_cargo_extra` y marca `es_late_checkout = true`.
+
+---
+
+## Notas
+
+### Datos Precargados
+
+El sistema viene con los siguientes datos ya cargados en la base de datos y **no deben ser modificados manualmente**:
+
+- **Tipos de habitación**: Simple, Suite, Doble Individual, Doble Matrimonial
+  - Cada uno tiene capacidad máxima y precio de referencia configurados automáticamente
+  - Se crean mediante el patrón Factory + Strategy
+
+- **Habitaciones físicas**: Múltiples habitaciones precargadas con números, pisos y tipos asignados
+  - El estado inicial de cada habitación es "disponible"
+  - Se pueden visualizar en la sección "Reservas" al crear una nueva reserva
+
+- **Contactos de servicios**: Servicios del hotel (limpieza, mantenimiento, catering, etc.)
+  - Incluyen nombre, persona de contacto y teléfono
+  - Solo se pueden consultar (lectura), no se pueden crear o modificar desde este prototipo
+
+### Limites
+
+Las siguientes características **no están incluidas**:
+
+- Gestión de usuarios y autenticación (el sistema asume un recepcionista)
+- Búsqueda de reservas por huésped
+- Consulta detallada de información de huéspedes
+- Historial completo
+- Reportes y estadísticas
+- Integraciones externas (pagos en línea, email, SMS)
+- Gestión de tarifas y temporadas
+
+### Validaciones
+
+El sistema implementa las siguientes validaciones:
+
+1. **Frontend**: Validación de campos en formularios (React)
+2. **Backend (DTOs)**: Validación de estructura de datos en peticiones HTTP
+3. **Servicios**: Validación de lógica de negocio (disponibilidad, capacidad, estado)
+4. **Base de datos**: Constraints y checks
