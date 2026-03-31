@@ -88,3 +88,99 @@
   color: var(--texto);
   font-size: 0.95rem;
 }
+
+/* Lista de reservas (igual a formulario de checkin) */
+.formulario-checkout__lista-reservas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: slideUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.formulario-checkout__lista-titulo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.formulario-checkout__lista-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--texto-muy-suave);
+  border-radius: var(--radio-sm);
+  padding: 0.5rem;
+}
+
+.formulario-checkout__lista-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: var(--superficie);
+  border: 1px solid var(--texto-muy-suave);
+  border-radius: var(--radio-sm);
+  cursor: pointer;
+  transition: all var(--transicion-rapida);
+}
+
+.formulario-checkout__lista-item:hover {
+  background: rgba(0, 113, 227, 0.05);
+  border-color: var(--primario);
+}
+
+.formulario-checkout__lista-item--seleccionada {
+  background: rgba(52, 199, 89, 0.1);
+  border-color: rgba(52, 199, 89, 0.5);
+}
+
+.formulario-checkout__lista-item-id {
+  font-weight: 700;
+  color: var(--primario);
+  font-size: 0.9rem;
+  min-width: 50px;
+}
+
+.formulario-checkout__lista-item-detalles {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.formulario-checkout__lista-item-habitacion {
+  font-weight: 600;
+  color: var(--texto);
+  font-size: 0.9rem;
+}
+
+.formulario-checkout__lista-item-huesped {
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+}
+
+.formulario-checkout__lista-item-fecha {
+  color: var(--texto-muy-suave);
+  font-size: 0.8rem;
+}
+
+.formulario-checkout__lista-item-check {
+  font-weight: 700;
+  color: rgba(52, 199, 89, 0.8);
+  font-size: 1.2rem;
+}
+
+.formulario-checkout__sin-resultados {
+  padding: 1rem;
+  background: rgba(255, 159, 64, 0.08);
+  border: 1px solid rgba(255, 159, 64, 0.2);
+  border-radius: var(--radio-sm);
+  color: var(--texto-suave);
+  text-align: center;
+  font-size: 0.9rem;
+}

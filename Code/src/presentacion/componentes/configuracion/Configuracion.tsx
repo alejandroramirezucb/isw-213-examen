@@ -175,12 +175,6 @@ export class Configuracion extends Component<{}, State> {
                     />
                   )}
 
-                  {config.descripcion && (
-                    <p className='configuracion__descripcion'>
-                      {decodificarTexto(config.descripcion)}
-                    </p>
-                  )}
-
                   {cambios[config.clave] !== undefined &&
                     cambios[config.clave] !== config.valor && (
                       <div className='configuracion__cambio-indicador'>
