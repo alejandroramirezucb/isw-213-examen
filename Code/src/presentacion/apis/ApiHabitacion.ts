@@ -18,8 +18,22 @@ const ApiHabitacion = {
   listar: (): Promise<Result<Habitacion[], string>> =>
     ClienteApp.peticion('/habitacion'),
 
-  listarDisponibles: (): Promise<Result<Habitacion[], string>> =>
-    ClienteApp.peticion('/habitacion/disponibles'),
+  listarDisponibles: (
+    fechaCheckin?: string,
+    fechaCheckout?: string,
+  ): Promise<Result<Habitacion[], string>> => {
+    if (fechaCheckin && fechaCheckout) {
+      const parametros = new URLSearchParams({
+        fecha_checkin: fechaCheckin,
+        fecha_checkout: fechaCheckout,
+      });
+      return ClienteApp.peticion(
+        `/habitacion/disponibles?${parametros.toString()}`,
+      );
+    }
+
+    return ClienteApp.peticion('/habitacion/disponibles');
+  },
 
   listarPorPiso: (piso: number): Promise<Result<Habitacion[], string>> =>
     ClienteApp.peticion(`/habitacion/piso/${piso}`),

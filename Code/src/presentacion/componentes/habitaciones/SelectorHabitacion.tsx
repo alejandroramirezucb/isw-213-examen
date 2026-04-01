@@ -19,7 +19,9 @@ type Habitacion = {
 
 type Props = {
   valor: number | null;
-  onSeleccionar: (id: number, habitacion?: Habitacion) => void
+  checkin: string;
+  checkout: string;
+  onSeleccionar: (id: number | null, habitacion?: Habitacion) => void;
 };
 
 type State = {
@@ -31,21 +33,65 @@ type State = {
 export class SelectorHabitacion extends Component<Props, State> {
   state: State = { habitaciones: [], tipos: [], tipoFiltro: null };
 
-  async componentDidMount() {
-    const [resultadoHabitaciones, resultadoTipos] = await Promise.all([
-      ApiHabitacion.listarDisponibles(),
-      ApiTipoHabitacion.listar(),
-    ]);
+  private tieneRangoFechasValido = () => {
+    const { checkin, checkout } = this.props;
+    return Boolean(checkin && checkout);
+  };
 
-    if (resultadoHabitaciones.ok) {
-      this.setState({ habitaciones: resultadoHabitaciones.val });
+  async componentDidMount() {
+    const resultadoTipos = await ApiTipoHabitacion.listar();
+
+    if (this.tieneRangoFechasValido()) {
+      const resultadoHabitaciones = await ApiHabitacion.listarDisponibles(
+        this.props.checkin || undefined,
+        this.props.checkout || undefined,
+      );
+
+      if (resultadoHabitaciones.ok) {
+        this.setState({ habitaciones: resultadoHabitaciones.val });
+      }
+    } else {
+      this.setState({ habitaciones: [] });
     }
+
     if (resultadoTipos.ok) {
       const tipos = resultadoTipos.val;
       this.setState({
         tipos,
         tipoFiltro: tipos.length > 0 ? Number(tipos[0].id) : null,
       });
+    }
+  }
+
+  async componentDidUpdate(prevProps: Props) {
+    if (
+      prevProps.checkin !== this.props.checkin ||
+      prevProps.checkout !== this.props.checkout
+    ) {
+      if (!this.tieneRangoFechasValido()) {
+        this.setState({ habitaciones: [] });
+        if (this.props.valor) {
+          this.props.onSeleccionar(null);
+        }
+        return;
+      }
+
+      const resultadoHabitaciones = await ApiHabitacion.listarDisponibles(
+        this.props.checkin || undefined,
+        this.props.checkout || undefined,
+      );
+
+      if (resultadoHabitaciones.ok) {
+        const habitaciones = resultadoHabitaciones.val;
+        this.setState({ habitaciones });
+
+        if (
+          this.props.valor &&
+          !habitaciones.some((habitacion) => habitacion.id === this.props.valor)
+        ) {
+          this.props.onSeleccionar(null);
+        }
+      }
     }
   }
 
@@ -84,12 +130,21 @@ export class SelectorHabitacion extends Component<Props, State> {
           className='formulario-reserva__campo'
           value={valor ?? ''}
           onChange={(evento) => {
+            if (!evento.target.value) {
+              onSeleccionar(null);
+              return;
+            }
+
             const id = Number(evento.target.value);
-            const hab = filtradas.find(h => h.id === id);
+            const hab = filtradas.find((h) => h.id === id);
             onSeleccionar(id, hab);
           }}
           required>
-          <option value=''>Seleccionar habitación</option>
+          <option value=''>
+            {this.tieneRangoFechasValido()
+              ? 'Seleccionar habitación'
+              : 'Primero selecciona check-in y check-out'}
+          </option>
           {filtradas.map((habitacion) => (
             <option
               key={habitacion.id}

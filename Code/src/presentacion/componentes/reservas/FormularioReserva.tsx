@@ -114,7 +114,6 @@ export class FormularioReserva extends Component<Props, State> {
     const {
       titular,
       idHabitacion,
-      habitacionSeleccionada,
       checkin,
       checkout,
       personas,
@@ -153,6 +152,8 @@ export class FormularioReserva extends Component<Props, State> {
           <label className='formulario-reserva__label'>Habitación</label>
           <SelectorHabitacion
             valor={idHabitacion}
+            checkin={checkin}
+            checkout={checkout}
             onSeleccionar={(identificador, hab) =>
               this.setState({
                 idHabitacion: identificador,

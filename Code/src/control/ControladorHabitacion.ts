@@ -17,8 +17,19 @@ export class ControladorHabitacion {
     new RespuestaHttp(resultado).enviar(res);
   }
 
-  async listarDisponibles(_req: Request, res: Response): Promise<void> {
-    const resultado = await this.servicio.listarDisponibles();
+  async listarDisponibles(req: Request, res: Response): Promise<void> {
+    const fechaCheckin =
+      typeof req.query.fecha_checkin === 'string'
+        ? req.query.fecha_checkin
+        : undefined;
+    const fechaCheckout =
+      typeof req.query.fecha_checkout === 'string'
+        ? req.query.fecha_checkout
+        : undefined;
+    const resultado = await this.servicio.listarDisponibles(
+      fechaCheckin,
+      fechaCheckout,
+    );
     new RespuestaHttp(resultado).enviar(res);
   }
 
