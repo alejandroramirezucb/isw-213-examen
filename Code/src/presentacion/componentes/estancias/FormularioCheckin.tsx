@@ -42,9 +42,12 @@ export class FormularioCheckin extends Component<{}, State> {
   async componentDidMount() {
     const resultado = await ApiReserva.listarActivas();
     if (resultado.ok) {
+      const reservasPendientes = resultado.val.filter(
+        (reserva: any) => reserva.estado === 'pendiente',
+      );
       this.setState({
-        reservas: resultado.val,
-        reservasFiltradas: resultado.val,
+        reservas: reservasPendientes,
+        reservasFiltradas: reservasPendientes,
         cargando: false,
       });
     } else {
@@ -60,7 +63,10 @@ export class FormularioCheckin extends Component<{}, State> {
     }
 
     const texto = termino.toLowerCase();
-    const filtradas = reservas.filter((reserva) => reserva.id.toString().includes(texto));
+    const filtradas = reservas.filter(
+      (reserva: any) =>
+        reserva.id.toString().includes(texto) && reserva.estado === 'pendiente',
+    );
 
     this.setState({ busqueda: termino, reservasFiltradas: filtradas });
   };

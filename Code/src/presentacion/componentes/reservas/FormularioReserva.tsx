@@ -61,6 +61,18 @@ export class FormularioReserva extends Component<Props, State> {
       return;
     }
 
+    if (checkin && checkout) {
+      const fechaCheckin = new Date(checkin);
+      const fechaCheckout = new Date(checkout);
+      if (fechaCheckout <= fechaCheckin) {
+        this.setState({
+          error:
+            'La fecha de check-out debe ser posterior a la fecha de check-in.',
+        });
+        return;
+      }
+    }
+
     this.setState({ cargando: true, error: null, exito: null });
     const resultado = await ApiReserva.crear({
       id_huesped_titular: titular.id,

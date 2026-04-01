@@ -54,9 +54,12 @@ export class FormularioCheckout extends Component<{}, State> {
     const resultado = await ApiReserva.listarActivas();
 
     if (resultado.ok) {
+      const reservasActivas = resultado.val.filter(
+        (reserva: any) => reserva.estado === 'activa',
+      );
       this.setState({
-        reservas: resultado.val,
-        reservasFiltradas: resultado.val,
+        reservas: reservasActivas,
+        reservasFiltradas: reservasActivas,
         cargando: false,
       });
     } else {
