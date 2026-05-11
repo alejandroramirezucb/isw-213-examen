@@ -12,7 +12,7 @@ import rutasUsuario from '../rutas/RutaUsuario';
 
 export class ServidorApp {
   private app: Express = express();
-  private readonly puerto = Number(process.env.PORT ?? 5000);
+  private readonly puerto = Number(process.env.PORT ?? 5001);
 
   constructor() {
     this.configurarMiddleware();
@@ -35,6 +35,10 @@ export class ServidorApp {
   };
 
   private configurarRutas(): void {
+    this.app.get('/api', (_req: Request, res: Response) => {
+      res.status(200).json({ status: 'ok', message: 'API disponible' });
+    });
+
     this.app.use('/api/huesped', rutasHuesped);
     this.app.use('/api/habitacion', rutasHabitacion);
     this.app.use('/api/tipo-habitacion', rutasTipoHabitacion);

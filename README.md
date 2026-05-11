@@ -66,20 +66,54 @@
    - **Backend**: Disponible en `http://localhost:5000`
    - **Frontend**: Disponible en `http://localhost:3000`
 
-### Verificación de funcionamiento
+## Despliegue
 
-Una vez ejecutado `npm run dev`, verifica que todo está funcionando:
+Este proyecto utiliza **Render** como plataforma de hosting para el backend y el frontend.
 
-1. Abre tu navegador web en `http://localhost:3000`
-2. Deberías ver la interfaz de Raidenhotel con la barra lateral de navegación
-3. Intenta navegar a la sección "Huéspedes" para registrar un nuevo huésped
-4. Verifica que los datos se guardan sin errores
+### Configuración de la base de datos
 
-Si ves errores de conexión a la base de datos, revisa que:
+1. Crea una nueva base de datos PostgreSQL en Render
+2. Ejecuta el siguiente comando para cargar el esquema:
 
-- PostgreSQL está corriendo
-- Los datos en `.env` son correctos (especialmente la contraseña)
-- La base de datos `hotel_db` existe y tiene las tablas cargadas
+```bash
+psql <external_url_database> -f Code/database/dump_local.sql
+```
+
+### Configuración del Backend
+
+Crea un **Web Service** con la siguiente configuración:
+
+| Configuración      | Valor                          |
+| ------------------ | ------------------------------ |
+| **Name**           | `raidenhotel_backend`          |
+| **Root Directory** | `Code`                         |
+| **Environment**    | Node                           |
+| **Build Command**  | `npm install && npm run build` |
+| **Start Command**  | `npm run start`                |
+
+**Variables de entorno del Backend:**
+
+```
+DB_HOST
+DB_PORT
+DB_USERNAME
+DB_PASSWORD
+DB_NAME
+DB_SSL
+```
+
+### Configuración del Frontend
+
+Crea un **Static Site** con la siguiente configuración:
+
+| Configuración         | Valor                                   |
+| --------------------- | --------------------------------------- |
+| **Name**              | `raidenhotel_frontend`                  |
+| **Root Directory**    | `Code`                                  |
+| **Build Command**     | `npm install && npm run build:frontend` |
+| **Publish Directory** | `dist`                                  |
+
+El frontend se conectará automáticamente al backend usando la URL de la API de Render.
 
 ---
 

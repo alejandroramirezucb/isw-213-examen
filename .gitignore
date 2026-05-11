@@ -9,3 +9,4 @@ Code/node_modules
 Code/dist
 Code/.env
 Code/database/.idea
+Code/dist-server
