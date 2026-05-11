@@ -1,7 +1,10 @@
 import { Ok, Err, Result } from 'ts-results';
 
 export class ClienteApp {
-  private static readonly base = '/api';
+  private static readonly base = (import.meta.env.VITE_API_BASE ?? '/api').replace(
+    /\/$/,
+    '',
+  );
 
   static async peticion<T>(
     ruta: string,

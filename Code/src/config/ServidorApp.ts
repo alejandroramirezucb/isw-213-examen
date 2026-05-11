@@ -12,7 +12,7 @@ import rutasUsuario from '../rutas/RutaUsuario';
 
 export class ServidorApp {
   private app: Express = express();
-  private readonly puerto = 5000;
+  private readonly puerto = Number(process.env.PORT ?? 5000);
 
   constructor() {
     this.configurarMiddleware();

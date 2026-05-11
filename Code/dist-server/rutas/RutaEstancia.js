@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const ControladorEstancia_1 = require("../control/ControladorEstancia");
+const router = (0, express_1.Router)();
+const controlador = new ControladorEstancia_1.ControladorEstancia();
+router.get('/abiertas', (req, res) => controlador.listarAbiertas(req, res));
+router.get('/reserva/:idReserva', (req, res) => controlador.buscarPorReserva(req, res));
+router.post('/reserva/:idReserva/checkin', (req, res) => controlador.registrarCheckin(req, res));
+router.put('/reserva/:idReserva/checkout', (req, res) => controlador.registrarCheckout(req, res));
+exports.default = router;

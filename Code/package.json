@@ -7,7 +7,10 @@
     "dev:server": "nodemon --watch src --ext ts --exec \"ts-node --project tsconfig.server.json -r dotenv/config src/main.ts\"",
     "dev:frontend": "vite",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:frontend\"",
-    "build": "vite build",
+    "build:server": "tsc -p tsconfig.server.json --outDir dist-server",
+    "build": "npm run build:server && vite build",
+    "start:server": "node dist-server/main.js",
+    "start": "npm run start:server",
     "preview": "vite preview"
   },
   "dependencies": {

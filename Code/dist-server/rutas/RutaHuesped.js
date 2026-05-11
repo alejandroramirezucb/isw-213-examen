@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const ControladorHuesped_1 = require("../control/ControladorHuesped");
+const router = (0, express_1.Router)();
+const controlador = new ControladorHuesped_1.ControladorHuesped();
+router.get('/buscar/documento', (req, res) => controlador.buscarPorDocumento(req, res));
+router.get('/buscar/nombres', (req, res) => controlador.buscarPorNombres(req, res));
+router.get('/:id', (req, res) => controlador.buscarPorId(req, res));
+router.get('/', (req, res) => controlador.listar(req, res));
+router.post('/', (req, res) => controlador.registrar(req, res));
+router.put('/:id', (req, res) => controlador.actualizar(req, res));
+exports.default = router;
