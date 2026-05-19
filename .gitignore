@@ -1,19 +1,12 @@
 .claude/
-
-# Node modules
 Code/server/node_modules
 Code/client/node_modules
-
-# Build outputs
 Code/server/dist
 Code/client/dist
-
 Code/server/.env
 Code/server/.env.example
 Code/client/.env
 Code/client/.env.example
-
-# Misc
 Code/database/.idea
 Code/skills-lock.json
 Code/.agents
