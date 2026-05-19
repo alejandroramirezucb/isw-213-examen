@@ -1,0 +1,12 @@
+{
+  "name": "isw-213-tests",
+  "version": "1.0.0",
+  "description": "Suite de pruebas unitarias del sistema de reservas hotelero",
+  "scripts": {
+    "test": "jest",
+    "coverage": "jest --coverage"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

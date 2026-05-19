@@ -10,3 +10,6 @@ Code/client/.env.example
 Code/database/.idea
 Code/skills-lock.json
 Code/.agents
+coverage/
+Code/node_modules
+Code/.nycrc
