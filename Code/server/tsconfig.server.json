@@ -24,6 +24,5 @@
     "src/servicios/**/*.ts",
     "src/control/**/*.ts",
     "src/rutas/**/*.ts"
-  ],
-  "exclude": ["src/presentacion/**/*", "src/config/ClienteApp.ts"]
+  ]
 }

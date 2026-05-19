@@ -10,3 +10,7 @@ Code/dist
 Code/.env
 Code/database/.idea
 Code/dist-server
+Code/client/node_modules
+Code/server/node_modules
+Code/client/dist
+Code/server/dist
