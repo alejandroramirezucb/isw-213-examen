@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
+    "outDir": "dist",
+    "ignoreDeprecations": "6.0",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "include": [
+    "main.ts",
+    "config/**/*.ts",
+    "dtos/**/*.ts",
+    "modelos/**/*.ts",
+    "repositorio/**/*.ts",
+    "servicios/**/*.ts",
+    "control/**/*.ts",
+    "rutas/**/*.ts"
+  ]
+}

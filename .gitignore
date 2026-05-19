@@ -1,16 +1,19 @@
 .claude/
-Code/.agents
-Code/skills-lock.json
-Code/database/migration.sql
-Code/database/schema.sql
-Code/database/supabase_database.sql
-Code/database/supabase_reset.sql
-Code/node_modules
-Code/dist
-Code/.env
-Code/database/.idea
-Code/dist-server
-Code/client/node_modules
+
+# Node modules
 Code/server/node_modules
-Code/client/dist
+Code/client/node_modules
+
+# Build outputs
 Code/server/dist
+Code/client/dist
+
+Code/server/.env
+Code/server/.env.example
+Code/client/.env
+Code/client/.env.example
+
+# Misc
+Code/database/.idea
+Code/skills-lock.json
+Code/.agents
