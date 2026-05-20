@@ -1,0 +1,50 @@
+services:
+  isw-db:
+    container_name: isw-213-examen_db
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=isw213
+    volumes:
+      - isw-db_data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - isw_net
+
+  isw-server:
+    container_name: isw-213-examen_server-c
+    build: ./server
+    ports:
+      - '5001:5001'
+    environment:
+      - DB_HOST=isw-db
+    env_file:
+      - ./server/.env
+    depends_on:
+      isw-db:
+        condition: service_healthy
+    networks:
+      - isw_net
+
+  isw-client:
+    container_name: isw-213-examen_client-c
+    build: ./client
+    ports:
+      - '3000:80'
+    depends_on:
+      - isw-server
+    networks:
+      - isw_net
+
+volumes:
+  isw-db_data:
+
+networks:
+  isw_net:
