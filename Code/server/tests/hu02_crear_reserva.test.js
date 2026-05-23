@@ -5,8 +5,39 @@ const {
   tieneConflictoFechas,
 } = require('../utils-calculos.js');
 
-describe('HU-02 Crear reserva - Validaciones', () => {
+require('../node_modules/ts-node/register/transpile-only');
 
+jest.mock('../repositorio/RepositorioHabitacion', () => ({
+  RepositorioHabitacion: {
+    buscarConTipo: jest.fn(),
+  },
+}));
+
+jest.mock('../repositorio/RepositorioReserva', () => ({
+  RepositorioReserva: {
+    tieneConflictoFechas: jest.fn(),
+    save: jest.fn(),
+  },
+}));
+
+jest.mock('../repositorio/RepositorioReservaHuesped', () => ({
+  RepositorioReservaHuesped: {
+    create: jest.fn(),
+    save: jest.fn(),
+  },
+}));
+
+const { ServicioReserva } = require('../servicios/ServicioReserva');
+const {
+  RepositorioHabitacion,
+} = require('../repositorio/RepositorioHabitacion');
+const { RepositorioReserva } = require('../repositorio/RepositorioReserva');
+const {
+  RepositorioReservaHuesped,
+} = require('../repositorio/RepositorioReservaHuesped');
+const { EstadoReserva } = require('../modelos/Reserva');
+
+describe('HU-02 Crear reserva - Validaciones', () => {
   describe('validarFechasReserva', () => {
     it('debe validar fechas válidas', () => {
       const resultado = validarFechasReserva('2026-05-20', '2026-05-25');
@@ -130,7 +161,7 @@ describe('HU-02 Crear reserva - Validaciones', () => {
       const resultado = tieneConflictoFechas(
         reservasExistentes,
         '2026-05-20',
-        '2026-05-25'
+        '2026-05-25',
       );
 
       expect(resultado).toBe(true);
@@ -144,7 +175,7 @@ describe('HU-02 Crear reserva - Validaciones', () => {
       const resultado = tieneConflictoFechas(
         reservasExistentes,
         '2026-05-15',
-        '2026-05-30'
+        '2026-05-30',
       );
 
       expect(resultado).toBe(true);
@@ -158,7 +189,7 @@ describe('HU-02 Crear reserva - Validaciones', () => {
       const resultado = tieneConflictoFechas(
         reservasExistentes,
         '2026-05-15',
-        '2026-05-20'
+        '2026-05-20',
       );
 
       expect(resultado).toBe(false);
@@ -172,7 +203,7 @@ describe('HU-02 Crear reserva - Validaciones', () => {
       const resultado = tieneConflictoFechas(
         reservasExistentes,
         '2026-05-25',
-        '2026-05-30'
+        '2026-05-30',
       );
 
       expect(resultado).toBe(false);
@@ -187,7 +218,7 @@ describe('HU-02 Crear reserva - Validaciones', () => {
       const resultado = tieneConflictoFechas(
         reservasExistentes,
         '2026-05-26',
-        '2026-05-31'
+        '2026-05-31',
       );
 
       expect(resultado).toBe(false);
@@ -203,10 +234,57 @@ describe('HU-02 Crear reserva - Validaciones', () => {
       const resultado = tieneConflictoFechas(
         reservasExistentes,
         '2026-05-28',
-        '2026-06-01'
+        '2026-06-01',
       );
 
       expect(resultado).toBe(true);
+    });
+  });
+
+  describe('crear', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('debe crear reserva y titular cuando los datos son validos', async () => {
+      // Arrange
+      const dto = {
+        id_habitacion: 1,
+        fecha_checkin: '2026-06-01',
+        fecha_checkout: '2026-06-05',
+        cantidad_personas: 2,
+        id_huesped_titular: 10,
+        notas: null,
+      };
+
+      RepositorioHabitacion.buscarConTipo.mockResolvedValue({
+        id: 1,
+        tipo_habitacion: { capacidad_maxima: 4 },
+      });
+      RepositorioReserva.tieneConflictoFechas.mockResolvedValue(false);
+
+      const reservaGuardada = {
+        id: 100,
+        estado: EstadoReserva.PENDIENTE,
+        notas: null,
+      };
+
+      RepositorioReserva.save.mockResolvedValue(reservaGuardada);
+      RepositorioReservaHuesped.create.mockReturnValue({
+        id_reserva: 100,
+        id_huesped: 10,
+        es_titular: true,
+      });
+      const servicio = new ServicioReserva();
+
+      // Act
+      const resultado = await servicio.crear(dto);
+
+      // Assert
+      expect(resultado.ok).toBe(true);
+      expect(resultado.val).toEqual(reservaGuardada);
+      expect(RepositorioReserva.save).toHaveBeenCalledTimes(1);
+      expect(RepositorioReservaHuesped.save).toHaveBeenCalledTimes(1);
     });
   });
 });

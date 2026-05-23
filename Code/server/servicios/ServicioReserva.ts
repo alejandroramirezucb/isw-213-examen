@@ -15,6 +15,8 @@ type ErrorReserva =
   | 'YA_CANCELADA';
 
 export class ServicioReserva {
+  // Comentado porsi acaso
+  /*
   async crear(dto: CrearReservaDTO): Promise<Result<Reserva, ErrorReserva>> {
     const habitacion = await RepositorioHabitacion.buscarConTipo(
       dto.id_habitacion,
@@ -56,6 +58,74 @@ export class ServicioReserva {
     await RepositorioReservaHuesped.save(titular);
 
     return Ok(reserva);
+  }
+  */
+
+  async crear(dto: CrearReservaDTO): Promise<Result<Reserva, ErrorReserva>> {
+    const validacion = await this.validarReserva(dto);
+
+    if (!validacion.ok) {
+      return Err(validacion.val);
+    }
+
+    const reserva = await this.guardarReserva(dto);
+    await this.crearTitular(reserva.id, dto.id_huesped_titular);
+
+    return Ok(reserva);
+  }
+
+  private async validarReserva(
+    dto: CrearReservaDTO,
+  ): Promise<Result<void, ErrorReserva>> {
+    const habitacion = await RepositorioHabitacion.buscarConTipo(
+      dto.id_habitacion,
+    );
+
+    if (!habitacion) {
+      return Err('HABITACION_NO_ENCONTRADA');
+    }
+
+    if (dto.cantidad_personas > habitacion.tipo_habitacion.capacidad_maxima) {
+      return Err('CAPACIDAD_EXCEDIDA');
+    }
+
+    const hayConflicto = await RepositorioReserva.tieneConflictoFechas(
+      dto.id_habitacion,
+      new Date(dto.fecha_checkin),
+      new Date(dto.fecha_checkout),
+    );
+
+    if (hayConflicto) {
+      return Err('HABITACION_NO_DISPONIBLE');
+    }
+
+    return Ok(undefined);
+  }
+
+  private async guardarReserva(dto: CrearReservaDTO): Promise<Reserva> {
+    const nuevaReserva = new Reserva();
+
+    nuevaReserva.habitacion = { id: dto.id_habitacion } as any;
+    nuevaReserva.fecha_checkin = dto.fecha_checkin;
+    nuevaReserva.fecha_checkout = dto.fecha_checkout;
+    nuevaReserva.cantidad_personas = dto.cantidad_personas;
+    nuevaReserva.estado = EstadoReserva.PENDIENTE;
+    nuevaReserva.notas = dto.notas ?? null;
+
+    return await RepositorioReserva.save(nuevaReserva);
+  }
+
+  private async crearTitular(
+    idReserva: number,
+    idHuesped: number,
+  ): Promise<void> {
+    const titular = RepositorioReservaHuesped.create({
+      id_reserva: idReserva,
+      id_huesped: idHuesped,
+      es_titular: true,
+    });
+
+    await RepositorioReservaHuesped.save(titular);
   }
 
   async cancelar(
