@@ -13,11 +13,22 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "types": ["jest", "node"],
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["index.tsx", "apis", "componentes", "config", "estilos", "paginas", "utiles", "*.d.ts"],
+  "include": [
+    "index.tsx",
+    "apis",
+    "componentes",
+    "config",
+    "estilos",
+    "paginas",
+    "utiles",
+    "tests",
+    "*.d.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

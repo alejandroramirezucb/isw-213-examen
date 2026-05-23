@@ -11,11 +11,7 @@ export default {
   },
   collectCoverage: true,
   collectCoverageFrom: [
-    'componentes/estancias/**/*.{ts,tsx}',
-    'componentes/huespedes/**/*.{ts,tsx}',
-    'componentes/reservas/**/*.{ts,tsx}',
-    'componentes/habitaciones/**/*.{ts,tsx}',
-    'utiles/**/*.{ts,tsx}',
+    'utiles/OrdenadorReservas.ts',
     '!**/node_modules/**',
     '!**/dist/**',
     '!**/tests/**',
