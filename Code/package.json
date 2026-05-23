@@ -4,9 +4,12 @@
   "description": "Suite de pruebas unitarias del sistema de reservas hotelero",
   "scripts": {
     "test": "jest",
-    "coverage": "jest --coverage"
+    "test:coverage": "node scripts/coverage-report.js",
+    "test:coverage:report": "node scripts/coverage-report.js"
   },
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "nyc": "^18.0.0",
+    "puppeteer": "^25.0.4"
   }
 }
