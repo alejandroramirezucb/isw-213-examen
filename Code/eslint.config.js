@@ -3,10 +3,10 @@ import sonarjs from 'eslint-plugin-sonarjs';
 
 export default [
   {
-    ignores: ['node_modules/**', '**/*.min.js', 'dist/**', 'coverage/**']
+    ignores: ['node_modules/**', '**/*.min.js', 'dist/**', 'coverage/**', '**/coverage/**', 'server/dist/**', 'client/dist/**']
   },
   {
-    files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
+    files: ['**/*.js'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',

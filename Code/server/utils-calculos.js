@@ -59,11 +59,13 @@ function validarFechasReserva(fechaIngreso, fechaSalida) {
   return { valido: true, error: null };
 }
 
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
 function calcularNoches(fechaIngreso, fechaSalida) {
   const ingreso = new Date(fechaIngreso);
   const salida = new Date(fechaSalida);
   const diff = salida.getTime() - ingreso.getTime();
-  return Math.floor(diff / (1000 * 60 * 60 * 24));
+  return Math.floor(diff / MS_PER_DAY);
 }
 
 function validarCapacidad(cantPersonas, capacidadMax) {
@@ -103,7 +105,7 @@ function filtrarActivasYFuturas(reservas, hoy) {
 function ordenarPorFechaIngreso(reservas) {
   if (!reservas) return [];
   return [...reservas].sort(
-    (a, b) => new Date(a.fecha_checkin) - new Date(b.fecha_checkin)
+    (resA, resB) => new Date(resA.fecha_checkin) - new Date(resB.fecha_checkin)
   );
 }
 
